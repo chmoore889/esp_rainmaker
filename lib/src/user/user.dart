@@ -22,13 +22,26 @@ class User {
     _urlBase = URLBase.getBase(version);
   }
 
+  /// Checks the validity of a password.
+  bool _isValidPassword(String password) {
+    final isCorrectLength = password.length >= 8;
+    final hasUppercase = password.contains(RegExp(r'[A-Z]'));
+    final hasDigits = password.contains(RegExp(r'[0-9]'));
+    final hasLowercase = password.contains(RegExp(r'[a-z]'));
+
+    return isCorrectLength && hasUppercase && hasDigits && hasLowercase;
+  }
+
   /// Creates a new user.
   ///
   /// The username must be an email. The password must
   /// be at least 8 characters long. It should contain
   /// at least one uppercase, one lowercase character
-  /// and a number
+  /// and a number.
   Future<void> createUser(String userName, String password) async {
+    assert(_isValidPassword(password),
+        'The password must be at least 8 characters long. It should contain at least one uppercase, one lowercase character and a number.');
+
     final url = _urlBase + _createConfirmEndpoint;
 
     final body = jsonEncode({
@@ -68,6 +81,9 @@ class User {
   /// The refresh token in the returned
   /// response can be used to extend a session.
   Future<LoginSuccessResponse> login(String userName, String password) async {
+    assert(_isValidPassword(password),
+        'The password must be at least 8 characters long. It should contain at least one uppercase, one lowercase character and a number.');
+
     final url = _urlBase + _loginEndpoint;
 
     final body = jsonEncode({

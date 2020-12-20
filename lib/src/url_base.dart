@@ -5,7 +5,7 @@ import 'package:esp_rainmaker/esp_rainmaker.dart';
 /// Is a fully static class that stores the base URL and
 /// provides methods to add data on to the base.
 class URLBase {
-  static const String _base = 'https://swaggerapis.rainmaker.espressif.com/';
+  static const String _base = 'https://api.rainmaker.espressif.com/';
 
   /// Gets the base API url with the given [version].
   static String getBase([APIVersion version = APIVersion.v1]) {

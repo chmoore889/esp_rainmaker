@@ -1,4 +1,5 @@
-
+## Introduction
+A wrapper of the ESP Rainmaker REST API for client-cloud communication.
 
 ## Usage
 
@@ -27,4 +28,4 @@ Future<void> main() async {
 
 Please file feature requests and bugs at the [issue tracker][tracker].
 
-[tracker]: http://example.com/issues/replaceme
+[tracker]: https://github.com/chmoore889/esp_rainmaker/issues

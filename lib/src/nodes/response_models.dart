@@ -15,7 +15,7 @@ class NodesList {
   /// The total number of nodes.
   final int totalNodes;
 
-  NodesList({
+  const NodesList({
     @required this.nodeIds,
     @required this.nodeDetails,
     @required this.nextId,
@@ -53,7 +53,7 @@ class NodeDetails {
   /// Key-value pairs of the parameters associated with a node.
   final Map<String, dynamic> params;
 
-  NodeDetails({
+  const NodeDetails({
     @required this.id,
     @required this.status,
     @required this.config,
@@ -79,7 +79,7 @@ class NodeConnectivity {
   /// Last time at which a node was connected.
   final int timestamp;
 
-  NodeConnectivity({
+  const NodeConnectivity({
     this.isConnected,
     this.timestamp,
   });
@@ -111,7 +111,7 @@ class NodeConfig {
   /// Key-value pairs of the parameters associated with a node.
   final List<Map<String, dynamic>> devices;
 
-  NodeConfig({
+  const NodeConfig({
     @required this.id,
     @required this.configVersion,
     @required this.firmwareVersion,
@@ -150,7 +150,7 @@ class MappingStatus {
   /// The mapping request ID.
   final String requestId;
 
-  MappingStatus({
+  const MappingStatus({
     @required this.nodeId,
     @required this.timestamp,
     @required this.status,

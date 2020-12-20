@@ -9,7 +9,7 @@ class LoginSuccessResponse {
   /// Token used to extend a user session.
   final String refreshToken;
 
-  LoginSuccessResponse(
+  const LoginSuccessResponse(
       {@required this.idToken,
       @required this.accessToken,
       @required this.refreshToken});
@@ -29,7 +29,7 @@ class ExtendSuccessResponse {
   final String idToken;
   final String accessToken;
 
-  ExtendSuccessResponse({@required this.idToken, @required this.accessToken});
+  const ExtendSuccessResponse({@required this.idToken, @required this.accessToken});
 
   factory ExtendSuccessResponse.fromJson(Map<String, dynamic> json) {
     return ExtendSuccessResponse(

@@ -1,12 +1,18 @@
 import 'package:meta/meta.dart';
 
+/// Data associated with a succesful login.
 @immutable
 class LoginSuccessResponse {
   final String idToken;
   final String accessToken;
+
+  /// Token used to extend a user session.
   final String refreshToken;
 
-  LoginSuccessResponse({@required this.idToken, @required this.accessToken, @required this.refreshToken});
+  LoginSuccessResponse(
+      {@required this.idToken,
+      @required this.accessToken,
+      @required this.refreshToken});
 
   factory LoginSuccessResponse.fromJson(Map<String, dynamic> json) {
     return LoginSuccessResponse(
@@ -17,6 +23,7 @@ class LoginSuccessResponse {
   }
 }
 
+/// Data associated with a succesful session extension.
 @immutable
 class ExtendSuccessResponse {
   final String idToken;

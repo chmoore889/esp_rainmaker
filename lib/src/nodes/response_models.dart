@@ -1,10 +1,18 @@
 import 'package:meta/meta.dart';
 
+/// List of node IDs and node data if requested.
 @immutable
 class NodesList {
+  /// List of node IDs.
   final List<String> nodeIds;
+
+  ///List of node details if requested.
   final List<NodeDetails> nodeDetails;
+
+  /// The next node ID.
   final String nextId;
+
+  /// The total number of nodes.
   final int totalNodes;
 
   NodesList({
@@ -19,21 +27,30 @@ class NodesList {
       final trimmed = nodeIds.substring(1, nodeIds.length - 1);
       return trimmed.split(', ');
     }
-    
+
     return NodesList(
       nodeIds: parseNodeIds(json['nodes']),
-      nodeDetails: (json['accesstoken'] as List).map<NodeDetails>((nodeDetails) => NodeDetails.fromJson(nodeDetails)),
+      nodeDetails: (json['accesstoken'] as List)
+          .map<NodeDetails>((nodeDetails) => NodeDetails.fromJson(nodeDetails)),
       nextId: json['refreshtoken'],
       totalNodes: json['refreshtoken'],
     );
   }
 }
 
+/// Detailed information related to a node.
 @immutable
 class NodeDetails {
+  /// The node's ID.
   final String id;
+
+  /// The connectivity status of the node.
   final NodeConnectivity status;
+
+  /// Configuration data related to the node.
   final NodeConfig config;
+
+  /// Key-value pairs of the parameters associated with a node.
   final Map<String, dynamic> params;
 
   NodeDetails({
@@ -53,9 +70,13 @@ class NodeDetails {
   }
 }
 
+/// Connectivity information related to a node.
 @immutable
 class NodeConnectivity {
+  /// Connectivity status of a node.
   final bool isConnected;
+
+  /// Last time at which a node was connected.
   final int timestamp;
 
   NodeConnectivity({
@@ -71,13 +92,23 @@ class NodeConnectivity {
   }
 }
 
+/// Configuration information related to a node.
 @immutable
 class NodeConfig {
+  /// The node's ID.
   final String id;
   final String configVersion;
+
+  /// The version of firmware running on the node.
   final String firmwareVersion;
+
+  /// The name of the node.
   final String name;
+
+  /// The type of the node.
   final String type;
+
+  /// Key-value pairs of the parameters associated with a node.
   final List<Map<String, dynamic>> devices;
 
   NodeConfig({
@@ -101,14 +132,22 @@ class NodeConfig {
   }
 }
 
+/// The status of a mapping operation.
 @immutable
 class MappingStatus {
+  /// The ID of the node being mapped.
   final String nodeId;
   final String timestamp;
+
+  /// The current status of the mapping request.
   final MappingRequestStatus status;
   final String confirmTimestamp;
   final String discardedTimestamp;
+
+  /// The source of the mapping request.
   final MappingRequestSource source;
+
+  /// The mapping request ID.
   final String requestId;
 
   MappingStatus({
@@ -131,15 +170,18 @@ class MappingStatus {
     return MappingStatus(
       nodeId: json['user_node_id'],
       timestamp: json['request_timestamp'],
-      status: enumFromString(MappingRequestStatus.values, json['request_status']),
+      status:
+          enumFromString(MappingRequestStatus.values, json['request_status']),
       confirmTimestamp: json['confirm_timestamp'],
       discardedTimestamp: json['discarded_timestamp'],
-      source: enumFromString(MappingRequestSource.values, json['request_source']),
+      source:
+          enumFromString(MappingRequestSource.values, json['request_source']),
       requestId: json['request_id'],
     );
   }
 }
 
+/// Possible statuses for a mapping request.
 enum MappingRequestStatus {
   requested,
   confirmed,
@@ -147,7 +189,5 @@ enum MappingRequestStatus {
   discarded,
 }
 
-enum MappingRequestSource {
-  user,
-  node
-}
+/// Possible sources for a mapping request.
+enum MappingRequestSource { user, node }

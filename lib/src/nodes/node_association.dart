@@ -31,7 +31,7 @@ class NodeAssociation {
       {String nodeId,
       bool includeNodeDetails,
       String startId,
-      String numRecords}) async {
+      int numRecords}) async {
     final url = _urlBase +
         _nodesBase +
         URLBase.getQueryParams({

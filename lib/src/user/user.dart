@@ -37,7 +37,8 @@ class User {
   /// The username must be an email. The password must
   /// be at least 8 characters long. It should contain
   /// at least one uppercase, one lowercase character
-  /// and a number.
+  /// and a number. Throws `UserAlreadyExistsException`
+  /// if user already exists.
   Future<void> createUser(String userName, String password) async {
     assert(_isValidPassword(password),
         'The password must be at least 8 characters long. It should contain at least one uppercase, one lowercase character and a number.');
@@ -52,6 +53,12 @@ class User {
     final resp = await post(url, body: body);
     final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 201) {
+      if (bodyResp['error_code'] == 101002) {
+        throw InvalidEmailException();
+      }
+      if (bodyResp['error_code'] == 101006) {
+        throw UserAlreadyExistsException();
+      }
       throw bodyResp['description'];
     }
   }
@@ -60,8 +67,12 @@ class User {
   ///
   /// The username must be the email used to create
   /// the user. The verification code is sent to the
-  /// email following the creation of the user.
+  /// email following the creation of the user. Throws
+  /// `BadVerificationException` on a bad code.
   Future<void> confirmUser(String userName, String verifCode) async {
+    assert(userName != null && userName.isNotEmpty);
+    assert(verifCode != null && verifCode.isNotEmpty);
+
     final url = _urlBase + _createConfirmEndpoint;
 
     final body = jsonEncode({
@@ -72,6 +83,12 @@ class User {
     final resp = await post(url, body: body);
     final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 201) {
+      if (bodyResp['error_code'] == 101002) {
+        throw InvalidEmailException();
+      }
+      if (bodyResp['error_code'] == 101012) {
+        throw BadVerificationException();
+      }
       throw bodyResp['description'];
     }
   }
@@ -80,6 +97,9 @@ class User {
   ///
   /// The refresh token in the returned
   /// response can be used to extend a session.
+  /// Throws `UnverifiedEmailException` if email is
+  /// not verified. Throws `InvalidCredentialsException`
+  /// if there is an incorrect username or password.
   Future<LoginSuccessResponse> login(String userName, String password) async {
     assert(_isValidPassword(password),
         'The password must be at least 8 characters long. It should contain at least one uppercase, one lowercase character and a number.');
@@ -94,6 +114,11 @@ class User {
     final resp = await post(url, body: body);
     final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
+      if (bodyResp['error_code'] == 101015) {
+        throw UnverifiedEmailException();
+      } else if (bodyResp['error_code'] == 101009) {
+        throw InvalidCredentialsException();
+      }
       throw bodyResp['description'];
     }
     return LoginSuccessResponse.fromJson(bodyResp);
@@ -115,6 +140,9 @@ class User {
     final resp = await post(url, body: body);
     final bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
+      if (bodyResp['error_code'] == 101017) {
+        throw BadRefreshTokenException();
+      }
       throw bodyResp['description'];
     }
     return ExtendSuccessResponse.fromJson(bodyResp);
@@ -136,9 +164,12 @@ class User {
       'accesstoken': accessToken,
     });
 
-    final resp = await post(url, body: body);
+    final resp = await put(url, body: body);
     final bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
+      if (bodyResp['error_code'] == 101009) {
+        throw InvalidCredentialsException();
+      }
       throw bodyResp['description'];
     }
   }
@@ -157,6 +188,9 @@ class User {
     final resp = await put(url, body: body);
     final bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
+      if (bodyResp['error_code'] == 101031) {
+        throw FailedPasswordException();
+      }
       throw bodyResp['description'];
     }
   }
@@ -182,4 +216,69 @@ class User {
       throw bodyResp['description'];
     }
   }
+}
+
+abstract class RainmakerAuthException implements Exception {
+  final String frontFacingText;
+
+  const RainmakerAuthException(this.frontFacingText);
+
+  @override
+  String toString();
+}
+
+class FailedPasswordException extends RainmakerAuthException {
+  const FailedPasswordException()
+      : super(
+            'There was a problem with your request. You might not have an account.');
+
+  @override
+  String toString() => 'FailedPasswordException: ${super.frontFacingText}';
+}
+
+class UnverifiedEmailException extends RainmakerAuthException {
+  const UnverifiedEmailException()
+      : super('The email used to login has not been verified');
+
+  @override
+  String toString() => 'UnverifiedEmailException: ${super.frontFacingText}';
+}
+
+class InvalidCredentialsException extends RainmakerAuthException {
+  const InvalidCredentialsException() : super('Incorrect username or password');
+
+  @override
+  String toString() => 'InvalidCredentialsException: ${super.frontFacingText}';
+}
+
+class UserAlreadyExistsException extends RainmakerAuthException {
+  const UserAlreadyExistsException()
+      : super('A user with this email already exists');
+
+  @override
+  String toString() => 'UserAlreadyExistsException: ${super.frontFacingText}';
+}
+
+class BadVerificationException extends RainmakerAuthException {
+  const BadVerificationException()
+      : super('The verification code is incorrect');
+
+  @override
+  String toString() => 'BadVerificationException: ${super.frontFacingText}';
+}
+
+class InvalidEmailException extends RainmakerAuthException {
+  const InvalidEmailException() : super('The entered email is not valid');
+
+  @override
+  String toString() => 'InvalidEmailException: ${super.frontFacingText}';
+}
+
+class BadRefreshTokenException extends RainmakerAuthException {
+  const BadRefreshTokenException()
+      : super(
+            'There was a problem authenticating you. Please log out and try again.');
+
+  @override
+  String toString() => 'BadRefreshTokenException: ${super.frontFacingText}';
 }

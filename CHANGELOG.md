@@ -1,3 +1,8 @@
+## 0.0.1-dev.3
+
+- Tested and likely stable user management functions
+- Added custom exceptions to handle errors for user management
+
 ## 0.0.1-dev.2
 
 - Improved documentation, formatted to increase pub score, and exported another file.

@@ -29,7 +29,8 @@ class ExtendSuccessResponse {
   final String idToken;
   final String accessToken;
 
-  const ExtendSuccessResponse({@required this.idToken, @required this.accessToken});
+  const ExtendSuccessResponse(
+      {@required this.idToken, @required this.accessToken});
 
   factory ExtendSuccessResponse.fromJson(Map<String, dynamic> json) {
     return ExtendSuccessResponse(

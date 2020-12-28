@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 
 /// Provides access to methods for obtaining and updating node state.
 class NodeState {
+  final String accessToken;
   String _urlBase;
 
   static const String _nodeState = 'user/nodes/params';
@@ -14,11 +15,11 @@ class NodeState {
   ///
   /// Uses the default API version of v1, though an
   /// alternative version can be specified.
-  NodeState([APIVersion version = APIVersion.v1]) {
+  NodeState(this.accessToken, [APIVersion version = APIVersion.v1]) {
     _urlBase = URLBase.getBase(version);
   }
 
-  /// Updates the state of nodes with the given [params].
+  /// Updates the state of a node with the given [params].
   ///
   /// Example map input:
   /// ```dart
@@ -32,12 +33,22 @@ class NodeState {
   ///  }
   ///}
   ///```
-  Future<void> updateState(Map<String, dynamic> params) async {
-    final url = _urlBase + _nodeState;
+  Future<void> updateState(String nodeId, Map<String, dynamic> params) async {
+    final url = _urlBase +
+        _nodeState +
+        URLBase.getQueryParams({
+          'node_id': nodeId,
+        });
 
     final body = jsonEncode(params);
 
-    final resp = await put(url, body: body);
+    final resp = await put(
+      url,
+      body: body,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
     final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
@@ -65,7 +76,12 @@ class NodeState {
           'nodeid': nodeId,
         });
 
-    final resp = await get(url);
+    final resp = await get(
+      url,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
     final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];

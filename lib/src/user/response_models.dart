@@ -39,3 +39,40 @@ class ExtendSuccessResponse {
     );
   }
 }
+
+@immutable
+class UserData {
+  final String id;
+  final String userName;
+  final String name;
+  final bool isSuperAdmin;
+  final String pictureUrl;
+
+  const UserData(
+      {@required this.id,
+      @required this.userName,
+      @required this.name,
+      @required this.isSuperAdmin,
+      @required this.pictureUrl});
+
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
+      id: json['user_id'],
+      isSuperAdmin: json['super_admin'],
+      name: json['name'],
+      pictureUrl: json['picture_url'],
+      userName: json['user_name'],
+    );
+  }
+
+  @override
+  String toString() {
+    return '''{
+  Id: $id
+  UserName: $userName
+  IsSuperAdmin: $isSuperAdmin
+  Name: $name
+  Pic URL: $pictureUrl
+}''';
+  }
+}

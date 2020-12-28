@@ -7,7 +7,7 @@ import 'package:http/http.dart';
 
 /// Provides access to methods for managing users.
 class User {
-  static const String _createConfirmEndpoint = 'user';
+  static const String _baseUserEndpoint = 'user';
   static const String _loginEndpoint = 'login';
   static const String _passwordChangeEndpoint = 'password';
   static const String _forgotPasswordEndpoint = 'forgotpassword';
@@ -43,7 +43,7 @@ class User {
     assert(_isValidPassword(password),
         'The password must be at least 8 characters long. It should contain at least one uppercase, one lowercase character and a number.');
 
-    final url = _urlBase + _createConfirmEndpoint;
+    final url = _urlBase + _baseUserEndpoint;
 
     final body = jsonEncode({
       'user_name': userName,
@@ -73,7 +73,7 @@ class User {
     assert(userName != null && userName.isNotEmpty);
     assert(verifCode != null && verifCode.isNotEmpty);
 
-    final url = _urlBase + _createConfirmEndpoint;
+    final url = _urlBase + _baseUserEndpoint;
 
     final body = jsonEncode({
       'user_name': userName,
@@ -161,10 +161,15 @@ class User {
     final body = jsonEncode({
       'password': password,
       'newpassword': newPassword,
-      'accesstoken': accessToken,
     });
 
-    final resp = await put(url, body: body);
+    final resp = await put(
+      url,
+      body: body,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
     final bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
       if (bodyResp['error_code'] == 101009) {
@@ -215,6 +220,53 @@ class User {
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
+  }
+
+  /// Updates the name of the user.
+  ///
+  /// Takes the new name of the user
+  /// and their access token. Data is
+  /// not used by the Rainmaker service;
+  /// it's only for convenient storage of user data.
+  Future<void> setName(String name, String accessToken) async {
+    final url = _urlBase + _baseUserEndpoint;
+
+    final body = jsonEncode({
+      'name': name,
+    });
+
+    final resp = await put(
+      url,
+      body: body,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
+    final bodyResp = jsonDecode(resp.body);
+    if (resp.statusCode != 200) {
+      throw bodyResp['description'];
+    }
+  }
+
+  /// Gets data associated with a user.
+  ///
+  /// Takes the the access token of the user.
+  /// Returns object containing properties associated
+  /// with a user.
+  Future<UserData> getUser(String accessToken) async {
+    final url = _urlBase + _baseUserEndpoint;
+
+    final resp = await get(
+      url,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
+    final bodyResp = jsonDecode(resp.body);
+    if (resp.statusCode != 200) {
+      throw bodyResp['description'];
+    }
+    return UserData.fromJson(bodyResp);
   }
 }
 

@@ -6,10 +6,16 @@ import 'package:esp_rainmaker/esp_rainmaker.dart';
 /// provides methods to add data on to the base.
 class URLBase {
   static const String _base = 'https://api.rainmaker.espressif.com/';
+  static const String authHeader = 'Authorization';
 
   /// Gets the base API url with the given [version].
   static String getBase([APIVersion version = APIVersion.v1]) {
     return _base + version.toShortString() + '/';
+  }
+
+  /// Gets the base API url without any verion information.
+  static String getUnversionedBase() {
+    return _base + '/';
   }
 
   /// Returns a query parameter string.

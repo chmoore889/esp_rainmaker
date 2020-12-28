@@ -7,18 +7,21 @@ import 'package:http/http.dart';
 
 /// Provides access to methods for associating a node with a user.
 class NodeAssociation {
+  final String accessToken;
   String _urlBase;
 
   static const String _nodesBase = 'user/nodes';
   static const String _nodeConfig = _nodesBase + '/config';
   static const String _nodeMapping = _nodesBase + '/mapping';
   static const String _nodeStatus = _nodesBase + '/status';
+  static const String _nodeSharing = _nodesBase + '/sharing';
 
   /// Contructs object to access node association methods.
   ///
+  /// Requires [accessToken] obtained from authentication.
   /// Uses the default API version of v1, though an
   /// alternative version can be specified.
-  NodeAssociation([APIVersion version = APIVersion.v1]) {
+  NodeAssociation(this.accessToken, [APIVersion version = APIVersion.v1]) {
     _urlBase = URLBase.getBase(version);
   }
 
@@ -29,19 +32,24 @@ class NodeAssociation {
   /// a description of the failure.
   Future<NodesList> nodes(
       {String nodeId,
-      bool includeNodeDetails,
+      bool includeNodeDetails = false,
       String startId,
       int numRecords}) async {
     final url = _urlBase +
         _nodesBase +
         URLBase.getQueryParams({
           'node_id': nodeId,
-          'node_details': includeNodeDetails,
+          'node_details': includeNodeDetails.toString(),
           'start_id': startId,
           'num_records': numRecords,
         });
 
-    final resp = await get(url);
+    final resp = await get(
+      url,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
     final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
@@ -61,7 +69,12 @@ class NodeAssociation {
           'nodeid': nodeId,
         });
 
-    final resp = await get(url);
+    final resp = await get(
+      url,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
     final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
@@ -83,7 +96,13 @@ class NodeAssociation {
       'operation': 'add',
     });
 
-    final resp = await put(url, body: body);
+    final resp = await put(
+      url,
+      body: body,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
     final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
@@ -104,7 +123,13 @@ class NodeAssociation {
       'operation': 'remove',
     });
 
-    final resp = await put(url, body: body);
+    final resp = await put(
+      url,
+      body: body,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
     final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
@@ -122,7 +147,12 @@ class NodeAssociation {
           'request_id': requestId,
         });
 
-    final resp = await get(url);
+    final resp = await get(
+      url,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
     final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
@@ -142,12 +172,91 @@ class NodeAssociation {
           'nodeid': nodeId,
         });
 
-    final resp = await get(url);
+    final resp = await get(
+      url,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
     final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
 
     return NodeConnectivity.fromJson(bodyResp['connectivity']);
+  }
+
+  /// Shares nodes with another user.
+  ///
+  /// Takes list of node ids to share and
+  /// a single email to share them with.
+  Future<void> share(List<String> nodeIds, String email) async {
+    final url = _urlBase + _nodeSharing;
+
+    final body = jsonEncode({
+      'node_id': nodeIds,
+      'email': email,
+    });
+
+    final resp = await put(
+      url,
+      body: body,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
+    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    if (resp.statusCode != 200) {
+      throw bodyResp['description'];
+    }
+  }
+
+  /// Unshares nodes with another user.
+  ///
+  /// Takes list of node ids to share and
+  /// a single email to share them with.
+  Future<void> unshare(List<String> nodeIds, String email) async {
+    final url = _urlBase +
+        _nodeSharing +
+        URLBase.getQueryParams({
+          'nodes': nodeIds,
+          'email': email,
+        });
+
+    final resp = await delete(
+      url,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
+    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    if (resp.statusCode != 200) {
+      throw bodyResp['description'];
+    }
+  }
+
+  /// Obtains who a node is shared with.
+  ///
+  /// Takes the id of the node and returns
+  /// who it's shared with.
+  Future<SharingDetail> getShare(String nodeId) async {
+    final url = _urlBase +
+        _nodeSharing +
+        URLBase.getQueryParams({
+          'node_id': nodeId,
+        });
+
+    final resp = await delete(
+      url,
+      headers: {
+        URLBase.authHeader: accessToken,
+      },
+    );
+    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    if (resp.statusCode != 200) {
+      throw bodyResp['description'];
+    }
+
+    return SharingDetail.fromJson(bodyResp);
   }
 }

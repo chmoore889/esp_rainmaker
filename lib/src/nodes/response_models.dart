@@ -23,18 +23,24 @@ class NodesList {
   });
 
   factory NodesList.fromJson(Map<String, dynamic> json) {
-    List<String> parseNodeIds(String nodeIds) {
-      final trimmed = nodeIds.substring(1, nodeIds.length - 1);
-      return trimmed.split(', ');
-    }
-
     return NodesList(
-      nodeIds: parseNodeIds(json['nodes']),
-      nodeDetails: (json['accesstoken'] as List)
-          .map<NodeDetails>((nodeDetails) => NodeDetails.fromJson(nodeDetails)),
-      nextId: json['refreshtoken'],
-      totalNodes: json['refreshtoken'],
+      nodeIds: json['nodes'].cast<String>(),
+      nodeDetails: (json['node_details'] as List)
+          .map<NodeDetails>((nodeDetails) => NodeDetails.fromJson(nodeDetails))
+          .toList(),
+      nextId: json['next_id'],
+      totalNodes: json['total'],
     );
+  }
+
+  @override
+  String toString() {
+    return '''{
+  Node Ids: $nodeIds
+  Node Details: $nodeDetails
+  Next Id: $nextId
+  Total Nodes: $totalNodes
+}''';
   }
 }
 
@@ -68,6 +74,16 @@ class NodeDetails {
       params: json['params'],
     );
   }
+
+  @override
+  String toString() {
+    return '''{
+  Node Id: $id
+  Connectivity Status: $status
+  Config: $config
+  Node Params: $params
+}''';
+  }
 }
 
 /// Connectivity information related to a node.
@@ -89,6 +105,14 @@ class NodeConnectivity {
       isConnected: json['connected'],
       timestamp: json['timestamp'],
     );
+  }
+
+  @override
+  String toString() {
+    return '''{
+  Is Connected: $isConnected
+  Timestamp: $timestamp
+}''';
   }
 }
 
@@ -127,8 +151,20 @@ class NodeConfig {
       firmwareVersion: json['info']['fw_version'],
       name: json['info']['name'],
       type: json['info']['type'],
-      devices: json['devices'],
+      devices: json['devices'].cast<Map<String, dynamic>>(),
     );
+  }
+
+  @override
+  String toString() {
+    return '''{
+  Id: $id
+  ConfigVer: $configVersion
+  FWVer: $firmwareVersion
+  Name: $name
+  Type: $type
+  Devices: $devices
+}''';
   }
 }
 
@@ -178,6 +214,32 @@ class MappingStatus {
           enumFromString(MappingRequestSource.values, json['request_source']),
       requestId: json['request_id'],
     );
+  }
+}
+
+@immutable
+class SharingDetail {
+  final String nodeId;
+  final List<String> primaryUsers;
+  final List<String> secondaryUsers;
+
+  const SharingDetail({
+    @required this.nodeId,
+    @required this.primaryUsers,
+    @required this.secondaryUsers,
+  });
+
+  factory SharingDetail.fromJson(Map<String, dynamic> json) {
+    return SharingDetail(
+      nodeId: json['node_id'],
+      primaryUsers: json['users']['primary'],
+      secondaryUsers: json['users']['secondary'],
+    );
+  }
+
+  @override
+  String toString() {
+    return 'SharingDetail(nodeId: $nodeId, primaryUsers: $primaryUsers, secondaryUsers: $secondaryUsers)';
   }
 }
 

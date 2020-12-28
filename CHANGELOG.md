@@ -1,3 +1,8 @@
+## 0.1.0
+
+- Fully tested functions and made breaking changes to fix issues
+- Added new Rainmaker functions
+
 ## 0.0.1-dev.3
 
 - Tested and likely stable user management functions

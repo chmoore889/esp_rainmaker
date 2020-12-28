@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:esp_rainmaker/esp_rainmaker.dart';
 import 'package:esp_rainmaker/src/url_base.dart';
 import 'package:http/http.dart';
+import 'package:meta/meta.dart';
 
 /// Provides access to methods for obtaining and updating node state.
 class NodeState {
@@ -88,5 +89,171 @@ class NodeState {
     }
 
     return bodyResp;
+  }
+
+  /// Helper function for adding a Rainmaker schedule.
+  /// 
+  /// Takes an [action] parameter that triggers at the
+  /// given time. The action parameter is identical to
+  /// the parameters used by the other state functions.
+  /// 
+  /// E.g.
+  /// ```dart
+  ///{
+  ///  'Light': {
+  ///    'brightness': 0,
+  ///    'output': true,
+  ///  },
+  ///  'Switch': {
+  ///    'output': true,
+  ///  }
+  ///}
+  ///```
+  Future<void> createSchedule(String nodeId, String name, String id, List<ScheduleTrigger> triggers, Map<String, dynamic> action) async {
+    final parsedTriggers = <Map<String, int>>[];
+    for(final trigger in triggers) {
+      final bitList = <int>[];
+      for(final dayOfWeek in trigger.daysOfWeek) {
+        final index = DaysOfWeek.values.indexOf(dayOfWeek);
+        bitList.add(1<<index);
+      }
+      
+      final combinedBitList = bitList.reduce((val1, val2) {
+        return val1 | val2;
+      });
+
+      parsedTriggers.add({
+        'd': combinedBitList,
+        'm': trigger.minutesSinceMidnight,
+      });
+    }
+
+    await updateState(nodeId, {
+      'Schedule': {
+        'Schedules': [{
+          'name': name,
+          'id': id,
+          'operation': 'add',
+          'triggers': parsedTriggers,
+          'action': action,
+        }],
+      }
+    });
+  }
+
+  /// Helper function for editing a Rainmaker schedule.
+  /// 
+  /// Takes an [action] parameter that triggers at the
+  /// given time. The action parameter is identical to
+  /// the parameters used by the other state functions.
+  /// 
+  /// E.g.
+  /// ```dart
+  ///{
+  ///  'Light': {
+  ///    'brightness': 0,
+  ///    'output': true,
+  ///  },
+  ///  'Switch': {
+  ///    'output': true,
+  ///  }
+  ///}
+  ///```
+  ///
+  /// When updating the [action] and [triggers] parameters,
+  /// *all*, the objects should be complete. They cannot be partial.
+  /// E.g. you should pass `"action":{"Light": {"power": true, "brightness":100}}`
+  /// and not just `"action":{"Light": {"brightness":100}}`.
+  Future<void> editSchedule(String nodeId, String id, [String name, List<ScheduleTrigger> triggers, Map<String, dynamic> action]) async {
+    final parsedTriggers = <Map<String, int>>[];
+
+    if(triggers != null) {
+      for(final trigger in triggers) {
+        final bitList = <int>[];
+        for(final dayOfWeek in trigger.daysOfWeek) {
+          final index = DaysOfWeek.values.indexOf(dayOfWeek);
+          bitList.add(1<<index);
+        }
+        
+        final combinedBitList = bitList.reduce((val1, val2) {
+          return val1 | val2;
+        });
+
+        parsedTriggers.add({
+          'd': combinedBitList,
+          'm': trigger.minutesSinceMidnight,
+        });
+      }
+    }
+    
+    await updateState(nodeId, {
+      'Schedule': {
+        'Schedules': [{
+          'name': name,
+          'id': id,
+          'operation': 'edit',
+          'triggers': parsedTriggers,
+          'action': action,
+        }],
+      }
+    });
+  }
+
+  /// Helper function for removing a Rainmaker schedule.
+  Future<void> deleteSchedule(String nodeId, String id) async {    
+    await updateState(nodeId, {
+      'Schedule': {
+        'Schedules': [{
+          'id': id,
+          'operation': 'remove',
+        }],
+      }
+    });
+  }
+
+  /// Helper function for change the enable
+  /// status of a Rainmaker schedule.
+  Future<void> changeEnableSchedule(String nodeId, String id, ScheduleEnableOperation operation) async {    
+    await updateState(nodeId, {
+      'Schedule': {
+        'Schedules': [{
+          'id': id,
+          'operation': operation.toShortString(),
+        }],
+      }
+    });
+  }
+}
+
+/// Details the times at which a schedule event should trigger.
+@immutable
+class ScheduleTrigger {
+  /// Days of week that the action should trigger.
+  final List<DaysOfWeek> daysOfWeek;
+
+  /// The time in minutes since midnight that an actions is triggered each [daysOfWeek].
+  final int minutesSinceMidnight;
+
+  ScheduleTrigger(this.daysOfWeek, this.minutesSinceMidnight);
+}
+
+enum DaysOfWeek {
+  monday,
+  tuesday,
+  wednesday,
+  thursday,
+  friday,
+  saturday,
+  sunday,
+}
+
+enum ScheduleEnableOperation {
+  disable,
+  enable,
+}
+
+extension ParseEnableOperationToString on ScheduleEnableOperation {
+  String toShortString() {
+    return toString().split('.').last;
   }
 }

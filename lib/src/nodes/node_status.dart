@@ -223,6 +223,17 @@ class NodeState {
       }
     });
   }
+
+  /// Helper function to get the number of minutes from midnight.
+  /// 
+  /// Useful for passing a schedule to the scheduling functions.
+  /// Returns the number of minutes from midnight of the
+  /// day of the DateTime object.
+  int getMinutesFromMidnight(DateTime time) {
+    final dayStart = DateTime(time.year, time.month, time.day);
+    final dur = time.difference(dayStart);
+    return dur.inMinutes;
+  }
 }
 
 /// Details the times at which a schedule event should trigger.

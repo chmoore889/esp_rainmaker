@@ -92,11 +92,11 @@ class NodeState {
   }
 
   /// Helper function for adding a Rainmaker schedule.
-  /// 
+  ///
   /// Takes an [action] parameter that triggers at the
   /// given time. The action parameter is identical to
   /// the parameters used by the other state functions.
-  /// 
+  ///
   /// E.g.
   /// ```dart
   ///{
@@ -109,15 +109,16 @@ class NodeState {
   ///  }
   ///}
   ///```
-  Future<void> createSchedule(String nodeId, String name, String id, List<ScheduleTrigger> triggers, Map<String, dynamic> action) async {
+  Future<void> createSchedule(String nodeId, String name, String id,
+      List<ScheduleTrigger> triggers, Map<String, dynamic> action) async {
     final parsedTriggers = <Map<String, int>>[];
-    for(final trigger in triggers) {
+    for (final trigger in triggers) {
       final bitList = <int>[];
-      for(final dayOfWeek in trigger.daysOfWeek) {
+      for (final dayOfWeek in trigger.daysOfWeek) {
         final index = DaysOfWeek.values.indexOf(dayOfWeek);
-        bitList.add(1<<index);
+        bitList.add(1 << index);
       }
-      
+
       final combinedBitList = bitList.reduce((val1, val2) {
         return val1 | val2;
       });
@@ -130,23 +131,25 @@ class NodeState {
 
     await updateState(nodeId, {
       'Schedule': {
-        'Schedules': [{
-          'name': name,
-          'id': id,
-          'operation': 'add',
-          'triggers': parsedTriggers,
-          'action': action,
-        }],
+        'Schedules': [
+          {
+            'name': name,
+            'id': id,
+            'operation': 'add',
+            'triggers': parsedTriggers,
+            'action': action,
+          }
+        ],
       }
     });
   }
 
   /// Helper function for editing a Rainmaker schedule.
-  /// 
+  ///
   /// Takes an [action] parameter that triggers at the
   /// given time. The action parameter is identical to
   /// the parameters used by the other state functions.
-  /// 
+  ///
   /// E.g.
   /// ```dart
   ///{
@@ -164,17 +167,20 @@ class NodeState {
   /// *all*, the objects should be complete. They cannot be partial.
   /// E.g. you should pass `"action":{"Light": {"power": true, "brightness":100}}`
   /// and not just `"action":{"Light": {"brightness":100}}`.
-  Future<void> editSchedule(String nodeId, String id, [String name, List<ScheduleTrigger> triggers, Map<String, dynamic> action]) async {
+  Future<void> editSchedule(String nodeId, String id,
+      [String name,
+      List<ScheduleTrigger> triggers,
+      Map<String, dynamic> action]) async {
     final parsedTriggers = <Map<String, int>>[];
 
-    if(triggers != null) {
-      for(final trigger in triggers) {
+    if (triggers != null) {
+      for (final trigger in triggers) {
         final bitList = <int>[];
-        for(final dayOfWeek in trigger.daysOfWeek) {
+        for (final dayOfWeek in trigger.daysOfWeek) {
           final index = DaysOfWeek.values.indexOf(dayOfWeek);
-          bitList.add(1<<index);
+          bitList.add(1 << index);
         }
-        
+
         final combinedBitList = bitList.reduce((val1, val2) {
           return val1 | val2;
         });
@@ -185,47 +191,54 @@ class NodeState {
         });
       }
     }
-    
+
     await updateState(nodeId, {
       'Schedule': {
-        'Schedules': [{
-          'name': name,
-          'id': id,
-          'operation': 'edit',
-          'triggers': parsedTriggers,
-          'action': action,
-        }],
+        'Schedules': [
+          {
+            'name': name,
+            'id': id,
+            'operation': 'edit',
+            'triggers': parsedTriggers,
+            'action': action,
+          }
+        ],
       }
     });
   }
 
   /// Helper function for removing a Rainmaker schedule.
-  Future<void> deleteSchedule(String nodeId, String id) async {    
+  Future<void> deleteSchedule(String nodeId, String id) async {
     await updateState(nodeId, {
       'Schedule': {
-        'Schedules': [{
-          'id': id,
-          'operation': 'remove',
-        }],
+        'Schedules': [
+          {
+            'id': id,
+            'operation': 'remove',
+          }
+        ],
       }
     });
   }
 
   /// Helper function for change the enable
   /// status of a Rainmaker schedule.
-  Future<void> changeEnableSchedule(String nodeId, String id, ScheduleEnableOperation operation) async {    
+  Future<void> changeEnableSchedule(
+      String nodeId, String id, ScheduleEnableOperation operation) async {
     await updateState(nodeId, {
       'Schedule': {
-        'Schedules': [{
-          'id': id,
-          'operation': operation.toShortString(),
-        }],
+        'Schedules': [
+          {
+            'id': id,
+            'operation': operation.toShortString(),
+          }
+        ],
       }
     });
   }
 
   /// Helper function to get the number of minutes from midnight.
-  /// 
+  ///
   /// Useful for passing a schedule to the scheduling functions.
   /// Returns the number of minutes from midnight of the
   /// day of the DateTime object.

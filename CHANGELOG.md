@@ -1,3 +1,7 @@
+## 0.1.0+1
+
+- Updated example in README
+
 ## 0.1.0
 
 - Fully tested functions and made breaking changes to fix issues

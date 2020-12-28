@@ -27,6 +27,10 @@ class LoginSuccessResponse {
 @immutable
 class ExtendSuccessResponse {
   final String idToken;
+
+  /// The token necessary for the authenticated API calls.
+  /// 
+  /// Store this token for later use.
   final String accessToken;
 
   const ExtendSuccessResponse(
@@ -40,6 +44,7 @@ class ExtendSuccessResponse {
   }
 }
 
+/// Data associated with a user in the Rainmaker server.
 @immutable
 class UserData {
   final String id;

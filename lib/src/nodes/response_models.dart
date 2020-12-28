@@ -217,10 +217,16 @@ class MappingStatus {
   }
 }
 
+/// Details of who a node is shared with.
 @immutable
 class SharingDetail {
+  /// The ID of the node in question.
   final String nodeId;
+
+  /// The primary users associated with the node.
   final List<String> primaryUsers;
+
+  /// The secondary users associated with the node.
   final List<String> secondaryUsers;
 
   const SharingDetail({

@@ -1,3 +1,7 @@
+## 0.2.0
+
+- Added scheduling helper functions
+
 ## 0.1.0+1
 
 - Updated example in README

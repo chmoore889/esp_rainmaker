@@ -91,7 +91,7 @@ class NodeState {
     return bodyResp;
   }
 
-  /// Helper function for adding a Rainmaker schedule.
+  /// Helper function for adding a default Rainmaker schedule.
   ///
   /// Takes an [action] parameter that triggers at the
   /// given time. The action parameter is identical to
@@ -144,7 +144,7 @@ class NodeState {
     });
   }
 
-  /// Helper function for editing a Rainmaker schedule.
+  /// Helper function for editing a default Rainmaker schedule.
   ///
   /// Takes an [action] parameter that triggers at the
   /// given time. The action parameter is identical to
@@ -207,7 +207,7 @@ class NodeState {
     });
   }
 
-  /// Helper function for removing a Rainmaker schedule.
+  /// Helper function for removing a default Rainmaker schedule.
   Future<void> deleteSchedule(String nodeId, String id) async {
     await updateState(nodeId, {
       'Schedule': {
@@ -222,7 +222,7 @@ class NodeState {
   }
 
   /// Helper function for change the enable
-  /// status of a Rainmaker schedule.
+  /// status of a default Rainmaker schedule.
   Future<void> changeEnableSchedule(
       String nodeId, String id, ScheduleEnableOperation operation) async {
     await updateState(nodeId, {

@@ -1,3 +1,7 @@
+## 0.3.0
+
+- **Breaking**: Added schedule-by-date scheduling options
+
 ## 0.2.0
 
 - Added scheduling helper functions

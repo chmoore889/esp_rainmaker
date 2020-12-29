@@ -168,9 +168,9 @@ class NodeState {
   /// E.g. you should pass `"action":{"Light": {"power": true, "brightness":100}}`
   /// and not just `"action":{"Light": {"brightness":100}}`.
   Future<void> editSchedule(String nodeId, String id,
-      [String name,
+      {String name,
       List<ScheduleTrigger> triggers,
-      Map<String, dynamic> action]) async {
+      Map<String, dynamic> action}) async {
     final parsedTriggers = <Map<String, int>>[];
 
     if (triggers != null) {

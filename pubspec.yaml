@@ -1,6 +1,6 @@
 name: esp_rainmaker
 description: A wrapper of the ESP Rainmaker REST API for client-cloud communication.
-version: 0.3.0
+version: 0.3.0+1
 homepage: https://github.com/chmoore889/esp_rainmaker.git
 
 environment:

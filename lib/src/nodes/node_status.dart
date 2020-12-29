@@ -113,13 +113,12 @@ class NodeState {
       List<ScheduleTrigger> triggers, Map<String, dynamic> action) async {
     final parsedTriggers = <Map<String, dynamic>>[];
     for (final trigger in triggers) {
-      if(trigger is DayOfWeekTrigger) {
+      if (trigger is DayOfWeekTrigger) {
         parsedTriggers.add({
           'd': _getBitList<DaysOfWeek>(trigger.daysOfWeek),
           'm': trigger.minutesSinceMidnight,
         });
-      }
-      else if(trigger is DateTrigger) {
+      } else if (trigger is DateTrigger) {
         parsedTriggers.add({
           'dd': trigger.day,
           'mm': _getBitList<MonthsOfYear>(trigger.months),
@@ -175,13 +174,12 @@ class NodeState {
 
     if (triggers != null) {
       for (final trigger in triggers) {
-        if(trigger is DayOfWeekTrigger) {
+        if (trigger is DayOfWeekTrigger) {
           parsedTriggers.add({
             'd': _getBitList<DaysOfWeek>(trigger.daysOfWeek),
             'm': trigger.minutesSinceMidnight,
           });
-        }
-        else if(trigger is DateTrigger) {
+        } else if (trigger is DateTrigger) {
           parsedTriggers.add({
             'dd': trigger.day,
             'mm': _getBitList<MonthsOfYear>(trigger.months),
@@ -251,20 +249,19 @@ class NodeState {
   int _getBitList<T>(List<T> list) {
     final bitList = <int>[];
 
-    if(T == DaysOfWeek) {
+    if (T == DaysOfWeek) {
       for (final dayOfWeek in list) {
         final index = DaysOfWeek.values.indexOf(dayOfWeek as DaysOfWeek);
         bitList.add(1 << index);
       }
-    }
-    else if(T == MonthsOfYear) {
+    } else if (T == MonthsOfYear) {
       for (final month in list) {
         final index = MonthsOfYear.values.indexOf(month as MonthsOfYear);
         bitList.add(1 << index);
       }
-    }
-    else {
-      throw StateError('There was a problem parsing the days of the week or months');
+    } else {
+      throw StateError(
+          'There was a problem parsing the days of the week or months');
     }
 
     return bitList.reduce((val1, val2) {
@@ -287,7 +284,8 @@ class DayOfWeekTrigger extends ScheduleTrigger {
   /// Days of week that the action should trigger.
   final List<DaysOfWeek> daysOfWeek;
 
-  const DayOfWeekTrigger(this.daysOfWeek, int minutesSinceMidnight) : super(minutesSinceMidnight);
+  const DayOfWeekTrigger(this.daysOfWeek, int minutesSinceMidnight)
+      : super(minutesSinceMidnight);
 }
 
 @immutable
@@ -304,7 +302,9 @@ class DateTrigger extends ScheduleTrigger {
   /// If the schedule should repeat every year.
   final bool repeatEveryYear;
 
-  const DateTrigger(this.months, this.day, this.year, this.repeatEveryYear, int minutesSinceMidnight) : super(minutesSinceMidnight);
+  const DateTrigger(this.months, this.day, this.year, this.repeatEveryYear,
+      int minutesSinceMidnight)
+      : super(minutesSinceMidnight);
 }
 
 enum DaysOfWeek {

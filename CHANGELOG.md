@@ -1,3 +1,7 @@
+## 0.3.0+1
+
+- Formatted code to increase pub score
+
 ## 0.3.0
 
 - **Breaking**: Added schedule-by-date scheduling options

@@ -123,7 +123,7 @@ class NodeState {
           'dd': trigger.day,
           'mm': _getBitList<MonthsOfYear>(trigger.months),
           'yy': trigger.year,
-          'r': trigger.repeatEveryYear.toString(),
+          'r': trigger.repeatEveryYear,
           'm': trigger.minutesSinceMidnight,
         });
       }
@@ -185,7 +185,8 @@ class NodeState {
             'dd': trigger.day,
             'mm': _getBitList<MonthsOfYear>(trigger.months),
             'yy': trigger.year,
-            'r': trigger.repeatEveryYear.toString(),
+            'r': trigger.repeatEveryYear,
+            'm': trigger.minutesSinceMidnight,
           });
         }
       }

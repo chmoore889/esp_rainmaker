@@ -1,3 +1,7 @@
+## 0.3.0+3
+
+- 2nd bug fix for date-based scheduling
+
 ## 0.3.0+2
 
 - Bug fix for date-based scheduling

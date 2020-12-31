@@ -124,6 +124,7 @@ class NodeState {
           'mm': _getBitList<MonthsOfYear>(trigger.months),
           'yy': trigger.year,
           'r': trigger.repeatEveryYear.toString(),
+          'm': trigger.minutesSinceMidnight,
         });
       }
     }

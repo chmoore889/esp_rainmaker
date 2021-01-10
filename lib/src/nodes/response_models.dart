@@ -26,8 +26,8 @@ class NodesList {
     return NodesList(
       nodeIds: json['nodes'].cast<String>(),
       nodeDetails: (json['node_details'] as List)
-          .map<NodeDetails>((nodeDetails) => NodeDetails.fromJson(nodeDetails))
-          .toList(),
+          ?.map<NodeDetails>((nodeDetails) => NodeDetails.fromJson(nodeDetails))
+          ?.toList(),
       nextId: json['next_id'],
       totalNodes: json['total'],
     );
@@ -151,7 +151,7 @@ class NodeConfig {
       firmwareVersion: json['info']['fw_version'],
       name: json['info']['name'],
       type: json['info']['type'],
-      devices: json['devices'].cast<Map<String, dynamic>>(),
+      devices: json['devices']?.cast<Map<String, dynamic>>(),
     );
   }
 
@@ -198,11 +198,15 @@ class MappingStatus {
 
   factory MappingStatus.fromJson(Map<String, dynamic> json) {
     T enumFromString<T>(List<T> enumList, String value) {
+      if(value == null) {
+        return null;
+      }
+
       return enumList.firstWhere(
         (type) => type.toString().split('.').last == value,
       );
     }
-
+    print(json);
     return MappingStatus(
       nodeId: json['user_node_id'],
       timestamp: json['request_timestamp'],

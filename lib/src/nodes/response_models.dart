@@ -198,7 +198,7 @@ class MappingStatus {
 
   factory MappingStatus.fromJson(Map<String, dynamic> json) {
     T enumFromString<T>(List<T> enumList, String value) {
-      if(value == null) {
+      if (value == null) {
         return null;
       }
 
@@ -206,6 +206,7 @@ class MappingStatus {
         (type) => type.toString().split('.').last == value,
       );
     }
+
     print(json);
     return MappingStatus(
       nodeId: json['user_node_id'],

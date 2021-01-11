@@ -1,7 +1,6 @@
-import 'dart:convert';
-
 import 'package:esp_rainmaker/esp_rainmaker.dart';
 import 'package:esp_rainmaker/src/device_grouping/response_models.dart';
+import 'package:esp_rainmaker/src/isolate_json.dart';
 import 'package:esp_rainmaker/src/url_base.dart';
 import 'package:http/http.dart';
 
@@ -35,7 +34,8 @@ class DeviceGrouping {
     final resp = await get(url, headers: {
       URLBase.authHeader: accessToken,
     });
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -52,7 +52,7 @@ class DeviceGrouping {
       [String parentGroupId, String type, List<String> nodeIds]) async {
     final url = _urlBase + _devGroupBase;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'group_name': groupName,
       'parent_group_id': parentGroupId,
       'type': type,
@@ -62,7 +62,8 @@ class DeviceGrouping {
     final resp = await post(url, body: body, headers: {
       URLBase.authHeader: accessToken,
     });
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -81,7 +82,7 @@ class DeviceGrouping {
           'group_id': groupId,
         });
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'group_name': groupName,
       'operation': operation.toShortString(),
       'nodes': nodeIds,
@@ -90,7 +91,8 @@ class DeviceGrouping {
     final resp = await put(url, body: body, headers: {
       URLBase.authHeader: accessToken,
     });
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -109,7 +111,8 @@ class DeviceGrouping {
     final resp = await delete(url, headers: {
       URLBase.authHeader: accessToken,
     });
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }

@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:esp_rainmaker/esp_rainmaker.dart';
+import 'package:esp_rainmaker/src/isolate_json.dart';
 import 'package:esp_rainmaker/src/url_base.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
@@ -41,7 +40,7 @@ class NodeState {
           'node_id': nodeId,
         });
 
-    final body = jsonEncode(params);
+    final body = await JsonIsolate().encodeJson(params);
 
     final resp = await put(
       url,
@@ -50,7 +49,8 @@ class NodeState {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -83,7 +83,8 @@ class NodeState {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }

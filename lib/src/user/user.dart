@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:esp_rainmaker/esp_rainmaker.dart';
+import 'package:esp_rainmaker/src/isolate_json.dart';
 import 'package:esp_rainmaker/src/user/response_models.dart';
 import 'package:esp_rainmaker/src/url_base.dart';
 import 'package:http/http.dart';
@@ -45,13 +44,14 @@ class User {
 
     final url = _urlBase + _baseUserEndpoint;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'user_name': userName,
       'password': password,
     });
 
     final resp = await post(url, body: body);
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 201) {
       if (bodyResp['error_code'] == 101002) {
         throw InvalidEmailException();
@@ -75,13 +75,14 @@ class User {
 
     final url = _urlBase + _baseUserEndpoint;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'user_name': userName,
       'verification_code': verifCode,
     });
 
     final resp = await post(url, body: body);
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 201) {
       if (bodyResp['error_code'] == 101002) {
         throw InvalidEmailException();
@@ -106,13 +107,14 @@ class User {
 
     final url = _urlBase + _loginEndpoint;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'user_name': userName,
       'password': password,
     });
 
     final resp = await post(url, body: body);
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       if (bodyResp['error_code'] == 101015) {
         throw UnverifiedEmailException();
@@ -132,13 +134,13 @@ class User {
       String userName, String refreshToken) async {
     final url = _urlBase + _loginEndpoint;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'user_name': userName,
       'refreshtoken': refreshToken,
     });
 
     final resp = await post(url, body: body);
-    final bodyResp = jsonDecode(resp.body);
+    final bodyResp = await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       if (bodyResp['error_code'] == 101017) {
         throw BadRefreshTokenException();
@@ -158,7 +160,7 @@ class User {
       String password, String newPassword, String accessToken) async {
     final url = _urlBase + _passwordChangeEndpoint;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'password': password,
       'newpassword': newPassword,
     });
@@ -170,7 +172,7 @@ class User {
         URLBase.authHeader: accessToken,
       },
     );
-    final bodyResp = jsonDecode(resp.body);
+    final bodyResp = await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       if (bodyResp['error_code'] == 101009) {
         throw InvalidCredentialsException();
@@ -186,12 +188,12 @@ class User {
   Future<void> reqForgotPass(String userName) async {
     final url = _urlBase + _forgotPasswordEndpoint;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'user_name': userName,
     });
 
     final resp = await put(url, body: body);
-    final bodyResp = jsonDecode(resp.body);
+    final bodyResp = await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       if (bodyResp['error_code'] == 101031) {
         throw FailedPasswordException();
@@ -209,14 +211,14 @@ class User {
       String userName, String password, String verificationCode) async {
     final url = _urlBase + _forgotPasswordEndpoint;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'user_name': userName,
       'password': password,
       'verification_code': verificationCode,
     });
 
     final resp = await put(url, body: body);
-    final bodyResp = jsonDecode(resp.body);
+    final bodyResp = await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -231,7 +233,7 @@ class User {
   Future<void> setName(String name, String accessToken) async {
     final url = _urlBase + _baseUserEndpoint;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'name': name,
     });
 
@@ -242,7 +244,7 @@ class User {
         URLBase.authHeader: accessToken,
       },
     );
-    final bodyResp = jsonDecode(resp.body);
+    final bodyResp = await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -262,7 +264,7 @@ class User {
         URLBase.authHeader: accessToken,
       },
     );
-    final bodyResp = jsonDecode(resp.body);
+    final bodyResp = await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }

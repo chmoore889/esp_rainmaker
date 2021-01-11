@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:esp_rainmaker/esp_rainmaker.dart';
+import 'package:esp_rainmaker/src/isolate_json.dart';
 import 'package:esp_rainmaker/src/url_base.dart';
 import 'package:http/http.dart';
 
@@ -28,7 +27,7 @@ class OTAService {
       [String imageType]) async {
     final url = _urlBase + _otaBase;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'base64_fwimage': base64FWImage,
       'image_name': imageName,
       'type': imageType,
@@ -41,7 +40,8 @@ class OTAService {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }

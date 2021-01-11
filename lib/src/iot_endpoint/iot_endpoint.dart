@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:esp_rainmaker/src/isolate_json.dart';
 import 'package:esp_rainmaker/src/url_base.dart';
 import 'package:http/http.dart';
 
@@ -24,7 +23,8 @@ class IOTEndpoint {
     final url = _urlBase + _iotBase;
 
     final resp = await get(url);
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }

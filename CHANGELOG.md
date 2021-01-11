@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Moved all JSON encoding and decoding to isolate. Should result in less jank when working with lots of data in Flutter.
+
 ## 0.3.0+3
 
 - 2nd bug fix for date-based scheduling

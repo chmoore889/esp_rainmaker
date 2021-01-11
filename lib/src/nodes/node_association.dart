@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:esp_rainmaker/esp_rainmaker.dart';
+import 'package:esp_rainmaker/src/isolate_json.dart';
 import 'package:esp_rainmaker/src/nodes/response_models.dart';
 import 'package:esp_rainmaker/src/url_base.dart';
 import 'package:http/http.dart';
@@ -50,7 +49,8 @@ class NodeAssociation {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -75,7 +75,8 @@ class NodeAssociation {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -90,7 +91,7 @@ class NodeAssociation {
   Future<String> addNodeMapping(String nodeId, String secretKey) async {
     final url = _urlBase + _nodeMapping;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'node_id': nodeId,
       'secret_key': secretKey,
       'operation': 'add',
@@ -103,7 +104,8 @@ class NodeAssociation {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -118,7 +120,7 @@ class NodeAssociation {
   Future<void> removeNodeMapping(String nodeId) async {
     final url = _urlBase + _nodeMapping;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'node_id': nodeId,
       'operation': 'remove',
     });
@@ -130,7 +132,8 @@ class NodeAssociation {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -153,7 +156,8 @@ class NodeAssociation {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -178,7 +182,8 @@ class NodeAssociation {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -193,7 +198,7 @@ class NodeAssociation {
   Future<void> share(List<String> nodeIds, String email) async {
     final url = _urlBase + _nodeSharing;
 
-    final body = jsonEncode({
+    final body = await JsonIsolate().encodeJson({
       'node_id': nodeIds,
       'email': email,
     });
@@ -205,7 +210,8 @@ class NodeAssociation {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -229,7 +235,8 @@ class NodeAssociation {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }
@@ -252,7 +259,8 @@ class NodeAssociation {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp = jsonDecode(resp.body);
+    final Map<String, dynamic> bodyResp =
+        await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
     }

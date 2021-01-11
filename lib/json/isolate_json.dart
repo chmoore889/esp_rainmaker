@@ -18,7 +18,7 @@ class JsonIsolate {
       await _makeIsolate();
     }
 
-    return _sendReceive(sendPort, json, JsonAction.decode);
+    return _sendReceive(sendPort, json, _JsonAction.decode);
   }
 
   Future<dynamic> encodeJson(dynamic toEncode) async {
@@ -26,13 +26,13 @@ class JsonIsolate {
       await _makeIsolate();
     }
 
-    return _sendReceive(sendPort, toEncode, JsonAction.encode);
+    return _sendReceive(sendPort, toEncode, _JsonAction.encode);
   }
 
   Future<void> _makeIsolate() async {
     final receivePort = ReceivePort();
     isolate = await Isolate.spawn(
-      isolateDecode,
+      _isolateDecode,
       receivePort.sendPort,
     );
     sendPort = await receivePort.first;
@@ -40,7 +40,7 @@ class JsonIsolate {
   }
 
   Future<dynamic> _sendReceive(
-      SendPort port, String json, JsonAction action) async {
+      SendPort port, String json, _JsonAction action) async {
     final response = ReceivePort();
     port.send([json, action, response.sendPort]);
     dynamic decoded = await response.first;
@@ -49,19 +49,19 @@ class JsonIsolate {
   }
 }
 
-void isolateDecode(SendPort sendPort) async {
+void _isolateDecode(SendPort sendPort) async {
   final receivePort = ReceivePort();
   sendPort.send(receivePort.sendPort);
 
   await for (List msg in receivePort) {
     final message = msg[0];
-    final JsonAction action = msg[1];
+    final _JsonAction action = msg[1];
     final SendPort replyTo = msg[2];
 
     dynamic data;
-    if (action == JsonAction.decode) {
+    if (action == _JsonAction.decode) {
       data = jsonDecode(message);
-    } else if (action == JsonAction.encode) {
+    } else if (action == _JsonAction.encode) {
       data = jsonEncode(message);
     } else {
       throw 'Invalid State';
@@ -71,7 +71,7 @@ void isolateDecode(SendPort sendPort) async {
   }
 }
 
-enum JsonAction {
+enum _JsonAction {
   encode,
   decode,
 }

@@ -1,6 +1,6 @@
 import 'package:esp_rainmaker/esp_rainmaker.dart';
 import 'package:esp_rainmaker/src/device_grouping/response_models.dart';
-import 'package:esp_rainmaker/src/isolate_json.dart';
+import 'package:esp_rainmaker/json/json.dart';
 import 'package:esp_rainmaker/src/url_base.dart';
 import 'package:http/http.dart';
 

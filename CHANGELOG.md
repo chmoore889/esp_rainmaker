@@ -1,3 +1,7 @@
+## 0.3.1+1
+
+- Brought back web support.
+
 ## 0.3.1
 
 - Moved all JSON encoding and decoding to isolate. Should result in less jank when working with lots of data in Flutter.

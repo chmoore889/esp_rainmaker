@@ -1,3 +1,7 @@
+## 0.3.1+2
+
+- Removed new JSON parsing from public exposure.
+
 ## 0.3.1+1
 
 - Brought back web support.

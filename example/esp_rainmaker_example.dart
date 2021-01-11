@@ -13,5 +13,5 @@ Future<void> main() async {
   //Add node mapping and check status
   final nodeAssociation = NodeAssociation(login.accessToken);
   final reqId = await nodeAssociation.addNodeMapping('nodeid1234', 'very_secret_key');
-  await nodeAssociation.getMappingStatus(reqId);
+  print(await nodeAssociation.getMappingStatus(reqId));
 }

@@ -40,7 +40,7 @@ class JsonIsolate {
   }
 
   Future<dynamic> _sendReceive(
-      SendPort port, String json, _JsonAction action) async {
+      SendPort port, dynamic json, _JsonAction action) async {
     final response = ReceivePort();
     port.send([json, action, response.sendPort]);
     dynamic decoded = await response.first;

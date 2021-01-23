@@ -1,3 +1,7 @@
+## 0.3.1+3
+
+- Fixed JSON encoding type bug.
+
 ## 0.3.1+2
 
 - Removed new JSON parsing from public exposure.

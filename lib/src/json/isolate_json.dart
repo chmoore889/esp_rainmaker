@@ -34,6 +34,7 @@ class JsonIsolate {
     isolate = await Isolate.spawn(
       _isolateDecode,
       receivePort.sendPort,
+      debugName: 'rainmaker_json_isolate',
     );
     sendPort = await receivePort.first;
     receivePort.close();

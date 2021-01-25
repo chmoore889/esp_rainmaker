@@ -1,6 +1,8 @@
 ## Introduction
 A wrapper of the ESP Rainmaker REST API for client-cloud communication.
 
+Uses the [isolate_json](https://pub.dev/packages/isolate_json) package for decoding/encoding JSONs. This allows this package to use the same isolate for decoding/encoding as this package's complement, [esp_rainmaker_local_control](https://pub.dev/packages/esp_rainmaker_local_control).
+
 ## Usage
 
 A simple usage example:

@@ -1,3 +1,7 @@
+## 0.4.0
+
+- Changed to new JSON encoding.
+
 ## 0.3.1+3
 
 - Fixed JSON encoding type bug.

@@ -1,7 +1,7 @@
 import 'package:esp_rainmaker/esp_rainmaker.dart';
-import 'package:esp_rainmaker/src/json/json.dart';
 import 'package:esp_rainmaker/src/url_base.dart';
 import 'package:http/http.dart';
+import 'package:isolate_json/isolate_json.dart';
 import 'package:meta/meta.dart';
 
 /// Provides access to methods for obtaining and updating node state.

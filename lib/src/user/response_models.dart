@@ -72,12 +72,6 @@ class UserData {
 
   @override
   String toString() {
-    return '''{
-  Id: $id
-  UserName: $userName
-  IsSuperAdmin: $isSuperAdmin
-  Name: $name
-  Pic URL: $pictureUrl
-}''';
+    return 'UserData(Id: $id, UserName: $userName, IsSuperAdmin: $isSuperAdmin, Name: $name, Pic URL: $pictureUrl)';
   }
 }

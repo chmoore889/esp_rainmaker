@@ -1,3 +1,7 @@
+## 0.4.0+1
+
+- Improved `toString` methods for response models.
+
 ## 0.4.0
 
 - Changed to new JSON encoding.

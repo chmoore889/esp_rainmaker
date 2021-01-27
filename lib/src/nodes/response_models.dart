@@ -35,12 +35,7 @@ class NodesList {
 
   @override
   String toString() {
-    return '''{
-  Node Ids: $nodeIds
-  Node Details: $nodeDetails
-  Next Id: $nextId
-  Total Nodes: $totalNodes
-}''';
+    return 'NodesList(Node Ids: $nodeIds, Node Details: $nodeDetails, Next Id: $nextId, Total Nodes: $totalNodes)';
   }
 }
 
@@ -77,12 +72,7 @@ class NodeDetails {
 
   @override
   String toString() {
-    return '''{
-  Node Id: $id
-  Connectivity Status: $status
-  Config: $config
-  Node Params: $params
-}''';
+    return 'NodeDetails(Node Id: $id, Connectivity Status: $status, Config: $config, Node Params: $params)';
   }
 }
 
@@ -109,10 +99,7 @@ class NodeConnectivity {
 
   @override
   String toString() {
-    return '''{
-  Is Connected: $isConnected
-  Timestamp: $timestamp
-}''';
+    return 'NodeConnectivity(Is Connected: $isConnected, Timestamp: $timestamp)';
   }
 }
 
@@ -157,14 +144,7 @@ class NodeConfig {
 
   @override
   String toString() {
-    return '''{
-  Id: $id
-  ConfigVer: $configVersion
-  FWVer: $firmwareVersion
-  Name: $name
-  Type: $type
-  Devices: $devices
-}''';
+    return 'NodeConfig(Id: $id, ConfigVer: $configVersion, FWVer: $firmwareVersion, Name: $name, Type: $type, Devices: $devices)';
   }
 }
 

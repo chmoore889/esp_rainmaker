@@ -1,3 +1,7 @@
+## 0.4.0+2
+
+- Fixed issues link.
+
 ## 0.4.0+1
 
 - Improved `toString` methods for response models.

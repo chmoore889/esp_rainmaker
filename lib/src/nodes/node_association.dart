@@ -253,7 +253,7 @@ class NodeAssociation {
           'node_id': nodeId,
         });
 
-    final resp = await delete(
+    final resp = await get(
       url,
       headers: {
         URLBase.authHeader: accessToken,

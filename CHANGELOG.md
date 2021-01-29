@@ -1,3 +1,7 @@
+## 0.4.1
+
+- Fixed error when obtaining sharing info.
+
 ## 0.4.0+2
 
 - Fixed issues link.

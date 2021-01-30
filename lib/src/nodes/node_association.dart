@@ -199,7 +199,7 @@ class NodeAssociation {
     final url = _urlBase + _nodeSharing;
 
     final body = await JsonIsolate().encodeJson({
-      'node_id': nodeIds,
+      'nodes': nodeIds,
       'email': email,
     });
 

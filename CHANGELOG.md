@@ -1,3 +1,7 @@
+## 0.4.1+2
+
+- Adding node sharing typo fix.
+
 ## 0.4.1+1
 
 - Edited response model to complete error fix.

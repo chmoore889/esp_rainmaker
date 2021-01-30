@@ -223,8 +223,8 @@ class SharingDetail {
   factory SharingDetail.fromJson(Map<String, dynamic> json) {
     return SharingDetail(
       nodeId: json['node_id'],
-      primaryUsers: json['users']['primary'],
-      secondaryUsers: json['users']['secondary'],
+      primaryUsers: json['users']['primary']?.cast<String>() ?? [],
+      secondaryUsers: json['users']['secondary']?.cast<String>() ?? [],
     );
   }
 

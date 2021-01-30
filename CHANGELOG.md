@@ -1,3 +1,7 @@
+## 0.4.1+1
+
+- Edited response model to complete error fix.
+
 ## 0.4.1
 
 - Fixed error when obtaining sharing info.

@@ -244,9 +244,9 @@ class NodeAssociation {
 
   /// Obtains who a node is shared with.
   ///
-  /// Takes the id of the node and returns
+  /// Optionally takes the id of the node and returns
   /// who it's shared with.
-  Future<SharingDetail> getShare(String nodeId) async {
+  Future<List<SharingDetail>> getShare([String nodeId]) async {
     final url = _urlBase +
         _nodeSharing +
         URLBase.getQueryParams({
@@ -259,12 +259,20 @@ class NodeAssociation {
         URLBase.authHeader: accessToken,
       },
     );
-    final Map<String, dynamic> bodyResp =
-        await JsonIsolate().decodeJson(resp.body);
+    final dynamic bodyResp = await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
-      throw bodyResp['description'];
+      if (bodyResp is Map) {
+        throw bodyResp['description'];
+      }
+      throw 'Bad state!';
     }
 
-    return SharingDetail.fromJson(bodyResp);
+    if (bodyResp is Map) {
+      return [SharingDetail.fromJson(bodyResp)];
+    } else {
+      return bodyResp
+          ?.map<SharingDetail>((e) => SharingDetail.fromJson(e))
+          ?.toList();
+    }
   }
 }

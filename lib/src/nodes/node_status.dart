@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 /// Provides access to methods for obtaining and updating node state.
 class NodeState {
   final String accessToken;
-  String _urlBase;
+  final URLBase _urlBase;
 
   static const String _nodeState = 'user/nodes/params';
 
@@ -15,9 +15,8 @@ class NodeState {
   ///
   /// Uses the default API version of v1, though an
   /// alternative version can be specified.
-  NodeState(this.accessToken, [APIVersion version = APIVersion.v1]) {
-    _urlBase = URLBase.getBase(version);
-  }
+  NodeState(this.accessToken, [APIVersion version = APIVersion.v1])
+      : _urlBase = URLBase(version);
 
   /// Updates the state of a node with the given [params].
   ///
@@ -34,16 +33,14 @@ class NodeState {
   ///}
   ///```
   Future<void> updateState(String nodeId, Map<String, dynamic> params) async {
-    final url = _urlBase +
-        _nodeState +
-        URLBase.getQueryParams({
-          'node_id': nodeId,
-        });
+    final uri = _urlBase.getPath(_nodeState, {
+      'node_id': nodeId,
+    });
 
     final body = await JsonIsolate().encodeJson(params);
 
     final resp = await put(
-      url,
+      uri,
       body: body,
       headers: {
         URLBase.authHeader: accessToken,
@@ -71,14 +68,12 @@ class NodeState {
   ///}
   ///```
   Future<Map<String, dynamic>> getState(String nodeId) async {
-    final url = _urlBase +
-        _nodeState +
-        URLBase.getQueryParams({
-          'nodeid': nodeId,
-        });
+    final uri = _urlBase.getPath(_nodeState, {
+      'node_id': nodeId,
+    });
 
     final resp = await get(
-      url,
+      uri,
       headers: {
         URLBase.authHeader: accessToken,
       },
@@ -169,9 +164,9 @@ class NodeState {
   /// E.g. you should pass `"action":{"Light": {"power": true, "brightness":100}}`
   /// and not just `"action":{"Light": {"brightness":100}}`.
   Future<void> editSchedule(String nodeId, String id,
-      {String name,
-      List<ScheduleTrigger> triggers,
-      Map<String, dynamic> action}) async {
+      {String? name,
+      List<ScheduleTrigger>? triggers,
+      Map<String, dynamic>? action}) async {
     final parsedTriggers = <Map<String, dynamic>>[];
 
     if (triggers != null) {

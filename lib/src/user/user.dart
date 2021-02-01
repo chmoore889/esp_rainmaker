@@ -11,15 +11,13 @@ class User {
   static const String _passwordChangeEndpoint = 'password';
   static const String _forgotPasswordEndpoint = 'forgotpassword';
 
-  String _urlBase;
+  final URLBase _urlBase;
 
   /// Contructs object to access user management methods.
   ///
   /// Uses the default API version of v1, though an
   /// alternative version can be specified.
-  User([APIVersion version = APIVersion.v1]) {
-    _urlBase = URLBase.getBase(version);
-  }
+  User([APIVersion version = APIVersion.v1]) : _urlBase = URLBase(version);
 
   /// Checks the validity of a password.
   bool _isValidPassword(String password) {
@@ -42,14 +40,14 @@ class User {
     assert(_isValidPassword(password),
         'The password must be at least 8 characters long. It should contain at least one uppercase, one lowercase character and a number.');
 
-    final url = _urlBase + _baseUserEndpoint;
+    final uri = _urlBase.getPath(_baseUserEndpoint);
 
     final body = await JsonIsolate().encodeJson({
       'user_name': userName,
       'password': password,
     });
 
-    final resp = await post(url, body: body);
+    final resp = await post(uri, body: body);
     final Map<String, dynamic> bodyResp =
         await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 201) {
@@ -70,17 +68,17 @@ class User {
   /// email following the creation of the user. Throws
   /// `BadVerificationException` on a bad code.
   Future<void> confirmUser(String userName, String verifCode) async {
-    assert(userName != null && userName.isNotEmpty);
-    assert(verifCode != null && verifCode.isNotEmpty);
+    assert(userName.isNotEmpty);
+    assert(verifCode.isNotEmpty);
 
-    final url = _urlBase + _baseUserEndpoint;
+    final uri = _urlBase.getPath(_baseUserEndpoint);
 
     final body = await JsonIsolate().encodeJson({
       'user_name': userName,
       'verification_code': verifCode,
     });
 
-    final resp = await post(url, body: body);
+    final resp = await post(uri, body: body);
     final Map<String, dynamic> bodyResp =
         await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 201) {
@@ -105,14 +103,14 @@ class User {
     assert(_isValidPassword(password),
         'The password must be at least 8 characters long. It should contain at least one uppercase, one lowercase character and a number.');
 
-    final url = _urlBase + _loginEndpoint;
+    final uri = _urlBase.getPath(_loginEndpoint);
 
     final body = await JsonIsolate().encodeJson({
       'user_name': userName,
       'password': password,
     });
 
-    final resp = await post(url, body: body);
+    final resp = await post(uri, body: body);
     final Map<String, dynamic> bodyResp =
         await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
@@ -132,14 +130,14 @@ class User {
   /// logging in.
   Future<ExtendSuccessResponse> extendSession(
       String userName, String refreshToken) async {
-    final url = _urlBase + _loginEndpoint;
+    final uri = _urlBase.getPath(_loginEndpoint);
 
     final body = await JsonIsolate().encodeJson({
       'user_name': userName,
       'refreshtoken': refreshToken,
     });
 
-    final resp = await post(url, body: body);
+    final resp = await post(uri, body: body);
     final bodyResp = await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       if (bodyResp['error_code'] == 101017) {
@@ -158,7 +156,7 @@ class User {
   /// or extending a session.
   Future<void> changePassword(
       String password, String newPassword, String accessToken) async {
-    final url = _urlBase + _passwordChangeEndpoint;
+    final uri = _urlBase.getPath(_passwordChangeEndpoint);
 
     final body = await JsonIsolate().encodeJson({
       'password': password,
@@ -166,7 +164,7 @@ class User {
     });
 
     final resp = await put(
-      url,
+      uri,
       body: body,
       headers: {
         URLBase.authHeader: accessToken,
@@ -186,13 +184,13 @@ class User {
   /// Sends password reset email to the
   /// [userName].
   Future<void> reqForgotPass(String userName) async {
-    final url = _urlBase + _forgotPasswordEndpoint;
+    final uri = _urlBase.getPath(_forgotPasswordEndpoint);
 
     final body = await JsonIsolate().encodeJson({
       'user_name': userName,
     });
 
-    final resp = await put(url, body: body);
+    final resp = await put(uri, body: body);
     final bodyResp = await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       if (bodyResp['error_code'] == 101031) {
@@ -209,7 +207,7 @@ class User {
   /// code that was sent to their email.
   Future<void> confirmForgotPass(
       String userName, String password, String verificationCode) async {
-    final url = _urlBase + _forgotPasswordEndpoint;
+    final uri = _urlBase.getPath(_forgotPasswordEndpoint);
 
     final body = await JsonIsolate().encodeJson({
       'user_name': userName,
@@ -217,7 +215,7 @@ class User {
       'verification_code': verificationCode,
     });
 
-    final resp = await put(url, body: body);
+    final resp = await put(uri, body: body);
     final bodyResp = await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 200) {
       throw bodyResp['description'];
@@ -231,14 +229,14 @@ class User {
   /// not used by the Rainmaker service;
   /// it's only for convenient storage of user data.
   Future<void> setName(String name, String accessToken) async {
-    final url = _urlBase + _baseUserEndpoint;
+    final uri = _urlBase.getPath(_baseUserEndpoint);
 
     final body = await JsonIsolate().encodeJson({
       'name': name,
     });
 
     final resp = await put(
-      url,
+      uri,
       body: body,
       headers: {
         URLBase.authHeader: accessToken,
@@ -256,10 +254,10 @@ class User {
   /// Returns object containing properties associated
   /// with a user.
   Future<UserData> getUser(String accessToken) async {
-    final url = _urlBase + _baseUserEndpoint;
+    final uri = _urlBase.getPath(_baseUserEndpoint);
 
     final resp = await get(
-      url,
+      uri,
       headers: {
         URLBase.authHeader: accessToken,
       },

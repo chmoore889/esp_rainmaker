@@ -1,3 +1,7 @@
+## 1.0.0-nullsafety.0
+
+- Migrated to null safety.
+
 ## 0.4.1+2
 
 - Adding node sharing typo fix.

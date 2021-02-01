@@ -7,7 +7,7 @@ import 'package:isolate_json/isolate_json.dart';
 /// Provides access to methods for managing device groupings.
 class DeviceGrouping {
   final String accessToken;
-  String _urlBase;
+  final URLBase _urlBase;
 
   static const String _devGroupBase = 'user/node_group';
 
@@ -16,22 +16,19 @@ class DeviceGrouping {
   /// Requires [accessToken] obtained from authentication.
   /// Uses the default API version of v1, though an
   /// alternative version can be specified.
-  DeviceGrouping(this.accessToken, [APIVersion version = APIVersion.v1]) {
-    _urlBase = URLBase.getBase(version);
-  }
+  DeviceGrouping(this.accessToken, [APIVersion version = APIVersion.v1])
+      : _urlBase = URLBase(version);
 
   /// Obtains details about user groups.
   ///
   /// Gets all groups if the [groupId] is
   /// not provided.
-  Future<DeviceGroups> getGroup([String groupId]) async {
-    final url = _urlBase +
-        _devGroupBase +
-        URLBase.getQueryParams({
-          'group_id': groupId,
-        });
+  Future<DeviceGroups> getGroup([String? groupId]) async {
+    final uri = _urlBase.getPath(_devGroupBase, {
+      'group_id': groupId ?? '',
+    });
 
-    final resp = await get(url, headers: {
+    final resp = await get(uri, headers: {
       URLBase.authHeader: accessToken,
     });
     final Map<String, dynamic> bodyResp =
@@ -49,8 +46,8 @@ class DeviceGrouping {
   /// parameters and allows for metadata
   /// storage in the [type] parameter.
   Future<void> createGroup(String groupName,
-      [String parentGroupId, String type, List<String> nodeIds]) async {
-    final url = _urlBase + _devGroupBase;
+      [String? parentGroupId, String? type, List<String>? nodeIds]) async {
+    final uri = _urlBase.getPath(_devGroupBase);
 
     final body = await JsonIsolate().encodeJson({
       'group_name': groupName,
@@ -59,7 +56,7 @@ class DeviceGrouping {
       'nodes': nodeIds,
     });
 
-    final resp = await post(url, body: body, headers: {
+    final resp = await post(uri, body: body, headers: {
       URLBase.authHeader: accessToken,
     });
     final Map<String, dynamic> bodyResp =
@@ -75,20 +72,20 @@ class DeviceGrouping {
   /// parameters. When changing nodes, both
   /// the [operation] and [nodeIds] must be specified.
   Future<void> updateGroup(String groupId,
-      {String groupName, OperationType operation, List<String> nodeIds}) async {
-    final url = _urlBase +
-        _devGroupBase +
-        URLBase.getQueryParams({
-          'group_id': groupId,
-        });
+      {String? groupName,
+      OperationType? operation,
+      List<String>? nodeIds}) async {
+    final uri = _urlBase.getPath(_devGroupBase, {
+      'group_id': groupId,
+    });
 
     final body = await JsonIsolate().encodeJson({
       'group_name': groupName,
-      'operation': operation.toShortString(),
+      'operation': operation?.toShortString(),
       'nodes': nodeIds,
     });
 
-    final resp = await put(url, body: body, headers: {
+    final resp = await put(uri, body: body, headers: {
       URLBase.authHeader: accessToken,
     });
     final Map<String, dynamic> bodyResp =
@@ -102,13 +99,11 @@ class DeviceGrouping {
   ///
   /// Throws an exception if the group doesn't exist.
   Future<void> deleteGroup(String groupId) async {
-    final url = _urlBase +
-        _devGroupBase +
-        URLBase.getQueryParams({
-          'group_id': groupId,
-        });
+    final uri = _urlBase.getPath(_devGroupBase, {
+      'group_id': groupId,
+    });
 
-    final resp = await delete(url, headers: {
+    final resp = await delete(uri, headers: {
       URLBase.authHeader: accessToken,
     });
     final Map<String, dynamic> bodyResp =

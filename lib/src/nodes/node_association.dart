@@ -7,7 +7,7 @@ import 'package:isolate_json/isolate_json.dart';
 /// Provides access to methods for associating a node with a user.
 class NodeAssociation {
   final String accessToken;
-  String _urlBase;
+  final URLBase _urlBase;
 
   static const String _nodesBase = 'user/nodes';
   static const String _nodeConfig = _nodesBase + '/config';
@@ -20,9 +20,8 @@ class NodeAssociation {
   /// Requires [accessToken] obtained from authentication.
   /// Uses the default API version of v1, though an
   /// alternative version can be specified.
-  NodeAssociation(this.accessToken, [APIVersion version = APIVersion.v1]) {
-    _urlBase = URLBase.getBase(version);
-  }
+  NodeAssociation(this.accessToken, [APIVersion version = APIVersion.v1])
+      : _urlBase = URLBase(version);
 
   /// Gets the nodes associated with the user
   ///
@@ -30,21 +29,19 @@ class NodeAssociation {
   /// true. Will throw an exception when there is a failure containing
   /// a description of the failure.
   Future<NodesList> nodes(
-      {String nodeId,
+      {String? nodeId,
       bool includeNodeDetails = false,
-      String startId,
-      int numRecords}) async {
-    final url = _urlBase +
-        _nodesBase +
-        URLBase.getQueryParams({
-          'node_id': nodeId,
-          'node_details': includeNodeDetails.toString(),
-          'start_id': startId,
-          'num_records': numRecords,
-        });
+      String? startId,
+      int? numRecords}) async {
+    final uri = _urlBase.getPath(_nodesBase, {
+      'node_id': nodeId ?? '',
+      'node_details': includeNodeDetails.toString(),
+      'start_id': startId ?? '',
+      'num_records': numRecords?.toString() ?? '',
+    });
 
     final resp = await get(
-      url,
+      uri,
       headers: {
         URLBase.authHeader: accessToken,
       },
@@ -63,14 +60,12 @@ class NodeAssociation {
   /// Will throw an exception when there is a failure containing a
   /// description of the failure.
   Future<NodeConfig> nodeConfig(String nodeId) async {
-    final url = _urlBase +
-        _nodeConfig +
-        URLBase.getQueryParams({
-          'nodeid': nodeId,
-        });
+    final uri = _urlBase.getPath(_nodeConfig, {
+      'nodeid': nodeId,
+    });
 
     final resp = await get(
-      url,
+      uri,
       headers: {
         URLBase.authHeader: accessToken,
       },
@@ -89,7 +84,7 @@ class NodeAssociation {
   /// Will throw an exception when there is a failure containing a
   /// description of the failure.
   Future<String> addNodeMapping(String nodeId, String secretKey) async {
-    final url = _urlBase + _nodeMapping;
+    final uri = _urlBase.getPath(_nodeMapping);
 
     final body = await JsonIsolate().encodeJson({
       'node_id': nodeId,
@@ -98,7 +93,7 @@ class NodeAssociation {
     });
 
     final resp = await put(
-      url,
+      uri,
       body: body,
       headers: {
         URLBase.authHeader: accessToken,
@@ -118,7 +113,7 @@ class NodeAssociation {
   /// Will throw an exception when there is a failure containing a
   /// description of the failure.
   Future<void> removeNodeMapping(String nodeId) async {
-    final url = _urlBase + _nodeMapping;
+    final uri = _urlBase.getPath(_nodeMapping);
 
     final body = await JsonIsolate().encodeJson({
       'node_id': nodeId,
@@ -126,7 +121,7 @@ class NodeAssociation {
     });
 
     final resp = await put(
-      url,
+      uri,
       body: body,
       headers: {
         URLBase.authHeader: accessToken,
@@ -144,14 +139,12 @@ class NodeAssociation {
   /// Will throw an exception when there is a failure containing a
   /// description of the failure.
   Future<MappingStatus> getMappingStatus(String requestId) async {
-    final url = _urlBase +
-        _nodeMapping +
-        URLBase.getQueryParams({
-          'request_id': requestId,
-        });
+    final uri = _urlBase.getPath(_nodeMapping, {
+      'request_id': requestId,
+    });
 
     final resp = await get(
-      url,
+      uri,
       headers: {
         URLBase.authHeader: accessToken,
       },
@@ -170,14 +163,12 @@ class NodeAssociation {
   /// Will throw an exception when there is a failure containing a
   /// description of the failure.
   Future<NodeConnectivity> getNodeStatus(String nodeId) async {
-    final url = _urlBase +
-        _nodeStatus +
-        URLBase.getQueryParams({
-          'nodeid': nodeId,
-        });
+    final uri = _urlBase.getPath(_nodeStatus, {
+      'nodeid': nodeId,
+    });
 
     final resp = await get(
-      url,
+      uri,
       headers: {
         URLBase.authHeader: accessToken,
       },
@@ -196,7 +187,7 @@ class NodeAssociation {
   /// Takes list of node ids to share and
   /// a single email to share them with.
   Future<void> share(List<String> nodeIds, String email) async {
-    final url = _urlBase + _nodeSharing;
+    final uri = _urlBase.getPath(_nodeSharing);
 
     final body = await JsonIsolate().encodeJson({
       'nodes': nodeIds,
@@ -204,7 +195,7 @@ class NodeAssociation {
     });
 
     final resp = await put(
-      url,
+      uri,
       body: body,
       headers: {
         URLBase.authHeader: accessToken,
@@ -222,15 +213,13 @@ class NodeAssociation {
   /// Takes list of node ids to share and
   /// a single email to share them with.
   Future<void> unshare(List<String> nodeIds, String email) async {
-    final url = _urlBase +
-        _nodeSharing +
-        URLBase.getQueryParams({
-          'nodes': nodeIds,
-          'email': email,
-        });
+    final uri = _urlBase.getPath(_nodeSharing, {
+      'nodes': nodeIds.reduce((value, element) => '$value,$element'),
+      'email': email,
+    });
 
     final resp = await delete(
-      url,
+      uri,
       headers: {
         URLBase.authHeader: accessToken,
       },
@@ -246,15 +235,13 @@ class NodeAssociation {
   ///
   /// Optionally takes the id of the node and returns
   /// who it's shared with.
-  Future<List<SharingDetail>> getShare([String nodeId]) async {
-    final url = _urlBase +
-        _nodeSharing +
-        URLBase.getQueryParams({
-          'node_id': nodeId,
-        });
+  Future<List<SharingDetail>> getShare([String? nodeId]) async {
+    final uri = _urlBase.getPath(_nodeSharing, {
+      'node_id': nodeId ?? '',
+    });
 
     final resp = await get(
-      url,
+      uri,
       headers: {
         URLBase.authHeader: accessToken,
       },
@@ -267,7 +254,7 @@ class NodeAssociation {
       throw 'Bad state!';
     }
 
-    if (bodyResp is Map) {
+    if (bodyResp is Map<String, dynamic>) {
       return [SharingDetail.fromJson(bodyResp)];
     } else {
       return bodyResp

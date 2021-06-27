@@ -4,20 +4,21 @@ import 'package:meta/meta.dart';
 @immutable
 class DeviceGroups {
   /// List of device groups.
-  final List<DeviceGroup> deviceGroups;
+  final List<DeviceGroup>? deviceGroups;
 
   /// The total number of records.
-  final int total;
+  final int? total;
 
   const DeviceGroups({
-    @required this.deviceGroups,
-    @required this.total,
+    this.deviceGroups,
+    this.total,
   });
 
   factory DeviceGroups.fromJson(Map<String, dynamic> json) {
     return DeviceGroups(
-      deviceGroups: (json['groups'] as List)
-          .map<DeviceGroup>((e) => DeviceGroup.fromJson(e)),
+      deviceGroups: (json['groups'] as List?)
+          ?.map<DeviceGroup>((e) => DeviceGroup.fromJson(e))
+          .toList(),
       total: json['total'],
     );
   }
@@ -31,19 +32,19 @@ class DeviceGroups {
 @immutable
 class DeviceGroup {
   /// Name of the group.
-  final String name;
+  final String? name;
 
   /// Id of the group.
-  final String id;
+  final String? id;
 
   /// Type of the group
-  final String type;
+  final String? type;
 
   /// List of node ids in the group
-  final List<String> nodes;
+  final List<String>? nodes;
 
   /// List of subgroups if any
-  final List<DeviceGroup> subgroups;
+  final List<DeviceGroup>? subgroups;
 
   const DeviceGroup({
     this.id,
@@ -58,8 +59,9 @@ class DeviceGroup {
       id: json['group_id'],
       name: json['group_name'],
       nodes: json['nodes'].cast<String>(),
-      subgroups: (json['sub_groups'] as List)
-          ?.map<DeviceGroup>((e) => DeviceGroup.fromJson(e)),
+      subgroups: (json['sub_groups'] as List?)
+          ?.map<DeviceGroup>((e) => DeviceGroup.fromJson(e))
+          .toList(),
       type: json['type'],
     );
   }

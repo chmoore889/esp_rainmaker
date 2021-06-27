@@ -4,7 +4,7 @@ import 'package:isolate_json/isolate_json.dart';
 
 /// Provides access to methods for obtaining the IOT endpoint.
 class IOTEndpoint {
-  String _urlBase;
+  final URLBase _urlBase;
 
   static const String _iotBase = 'mqtt_host';
 
@@ -12,15 +12,13 @@ class IOTEndpoint {
   ///
   /// API doesn't use a version unlike most of the
   /// other services.
-  IOTEndpoint() {
-    _urlBase = URLBase.getUnversionedBase();
-  }
+  IOTEndpoint() : _urlBase = URLBase(null);
 
   /// Obtains IOT endpoint.
   ///
   /// Returns the endpoint as a string.
   Future<String> mqttHost() async {
-    final url = _urlBase + _iotBase;
+    final url = _urlBase.getPath(_iotBase);
 
     final resp = await get(url);
     final Map<String, dynamic> bodyResp =

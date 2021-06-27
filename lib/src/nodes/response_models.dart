@@ -4,30 +4,30 @@ import 'package:meta/meta.dart';
 @immutable
 class NodesList {
   /// List of node IDs.
-  final List<String> nodeIds;
+  final List<String>? nodeIds;
 
   ///List of node details if requested.
-  final List<NodeDetails> nodeDetails;
+  final List<NodeDetails>? nodeDetails;
 
   /// The next node ID.
-  final String nextId;
+  final String? nextId;
 
   /// The total number of nodes.
-  final int totalNodes;
+  final int? totalNodes;
 
   const NodesList({
-    @required this.nodeIds,
-    @required this.nodeDetails,
-    @required this.nextId,
-    @required this.totalNodes,
+    this.nodeIds,
+    this.nodeDetails,
+    this.nextId,
+    this.totalNodes,
   });
 
   factory NodesList.fromJson(Map<String, dynamic> json) {
     return NodesList(
       nodeIds: json['nodes'].cast<String>(),
-      nodeDetails: (json['node_details'] as List)
+      nodeDetails: (json['node_details'] as List?)
           ?.map<NodeDetails>((nodeDetails) => NodeDetails.fromJson(nodeDetails))
-          ?.toList(),
+          .toList(),
       nextId: json['next_id'],
       totalNodes: json['total'],
     );
@@ -55,10 +55,10 @@ class NodeDetails {
   final Map<String, dynamic> params;
 
   const NodeDetails({
-    @required this.id,
-    @required this.status,
-    @required this.config,
-    @required this.params,
+    required this.id,
+    required this.status,
+    required this.config,
+    required this.params,
   });
 
   factory NodeDetails.fromJson(Map<String, dynamic> json) {
@@ -86,8 +86,8 @@ class NodeConnectivity {
   final int timestamp;
 
   const NodeConnectivity({
-    this.isConnected,
-    this.timestamp,
+    required this.isConnected,
+    required this.timestamp,
   });
 
   factory NodeConnectivity.fromJson(Map<String, dynamic> json) {
@@ -123,12 +123,12 @@ class NodeConfig {
   final List<Map<String, dynamic>> devices;
 
   const NodeConfig({
-    @required this.id,
-    @required this.configVersion,
-    @required this.firmwareVersion,
-    @required this.name,
-    @required this.type,
-    @required this.devices,
+    required this.id,
+    required this.configVersion,
+    required this.firmwareVersion,
+    required this.name,
+    required this.type,
+    required this.devices,
   });
 
   factory NodeConfig.fromJson(Map<String, dynamic> json) {
@@ -167,21 +167,17 @@ class MappingStatus {
   final String requestId;
 
   const MappingStatus({
-    @required this.nodeId,
-    @required this.timestamp,
-    @required this.status,
-    @required this.confirmTimestamp,
-    @required this.discardedTimestamp,
-    @required this.source,
-    @required this.requestId,
+    required this.nodeId,
+    required this.timestamp,
+    required this.status,
+    required this.confirmTimestamp,
+    required this.discardedTimestamp,
+    required this.source,
+    required this.requestId,
   });
 
   factory MappingStatus.fromJson(Map<String, dynamic> json) {
     T enumFromString<T>(List<T> enumList, String value) {
-      if (value == null) {
-        return null;
-      }
-
       return enumList.firstWhere(
         (type) => type.toString().split('.').last == value,
       );
@@ -215,9 +211,9 @@ class SharingDetail {
   final List<String> secondaryUsers;
 
   const SharingDetail({
-    @required this.nodeId,
-    @required this.primaryUsers,
-    @required this.secondaryUsers,
+    required this.nodeId,
+    required this.primaryUsers,
+    required this.secondaryUsers,
   });
 
   factory SharingDetail.fromJson(Map<String, dynamic> json) {

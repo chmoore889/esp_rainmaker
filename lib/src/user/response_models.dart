@@ -10,9 +10,9 @@ class LoginSuccessResponse {
   final String refreshToken;
 
   const LoginSuccessResponse(
-      {@required this.idToken,
-      @required this.accessToken,
-      @required this.refreshToken});
+      {required this.idToken,
+      required this.accessToken,
+      required this.refreshToken});
 
   factory LoginSuccessResponse.fromJson(Map<String, dynamic> json) {
     return LoginSuccessResponse(
@@ -34,7 +34,7 @@ class ExtendSuccessResponse {
   final String accessToken;
 
   const ExtendSuccessResponse(
-      {@required this.idToken, @required this.accessToken});
+      {required this.idToken, required this.accessToken});
 
   factory ExtendSuccessResponse.fromJson(Map<String, dynamic> json) {
     return ExtendSuccessResponse(
@@ -54,11 +54,11 @@ class UserData {
   final String pictureUrl;
 
   const UserData(
-      {@required this.id,
-      @required this.userName,
-      @required this.name,
-      @required this.isSuperAdmin,
-      @required this.pictureUrl});
+      {required this.id,
+      required this.userName,
+      required this.name,
+      required this.isSuperAdmin,
+      required this.pictureUrl});
 
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(

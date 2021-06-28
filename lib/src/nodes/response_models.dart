@@ -4,30 +4,33 @@ import 'package:meta/meta.dart';
 @immutable
 class NodesList {
   /// List of node IDs.
-  final List<String>? nodeIds;
+  final List<String> nodeIds;
 
   ///List of node details if requested.
-  final List<NodeDetails>? nodeDetails;
+  final List<NodeDetails> nodeDetails;
 
   /// The next node ID.
-  final String? nextId;
+  final String nextId;
 
   /// The total number of nodes.
-  final int? totalNodes;
+  final int totalNodes;
 
   const NodesList({
-    this.nodeIds,
-    this.nodeDetails,
-    this.nextId,
-    this.totalNodes,
+    required this.nodeIds,
+    required this.nodeDetails,
+    required this.nextId,
+    required this.totalNodes,
   });
 
   factory NodesList.fromJson(Map<String, dynamic> json) {
     return NodesList(
-      nodeIds: json['nodes'].cast<String>(),
-      nodeDetails: (json['node_details'] as List?)
-          ?.map<NodeDetails>((nodeDetails) => NodeDetails.fromJson(nodeDetails))
-          .toList(),
+      nodeIds: [...json['nodes'].cast<String>()],
+      nodeDetails: [
+        ...json['node_details']
+            .map<NodeDetails>(
+                (nodeDetails) => NodeDetails.fromJson(nodeDetails))
+            .toList()
+      ],
       nextId: json['next_id'],
       totalNodes: json['total'],
     );

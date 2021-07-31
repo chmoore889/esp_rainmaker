@@ -49,9 +49,9 @@ class ExtendSuccessResponse {
 class UserData {
   final String id;
   final String userName;
-  final String name;
+  final String? name;
   final bool isSuperAdmin;
-  final String pictureUrl;
+  final String? pictureUrl;
 
   const UserData(
       {required this.id,
@@ -63,7 +63,7 @@ class UserData {
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(
       id: json['user_id'],
-      isSuperAdmin: json['super_admin'],
+      isSuperAdmin: json['super_admin'] ?? false,
       name: json['name'],
       pictureUrl: json['picture_url'],
       userName: json['user_name'],

@@ -4,10 +4,10 @@ Future<void> main() async {
   final user = User();
 
   //Create new user
-  await user.createUser('email@email.com', 'password12345');
+  await user.createUser('email@email.com', 'Password12345');
 
   //Login and extend session
-  final login = await user.login('email@email.com', 'password12345');
+  final login = await user.login('email@email.com', 'Password12345');
   await user.extendSession('email@email.com', login.refreshToken);
 
   //Add node mapping and check status

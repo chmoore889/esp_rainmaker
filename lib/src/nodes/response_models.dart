@@ -10,10 +10,10 @@ class NodesList {
   final List<NodeDetails> nodeDetails;
 
   /// The next node ID.
-  final String nextId;
+  final String? nextId;
 
   /// The total number of nodes.
-  final int totalNodes;
+  final int? totalNodes;
 
   const NodesList({
     required this.nodeIds,
@@ -24,9 +24,9 @@ class NodesList {
 
   factory NodesList.fromJson(Map<String, dynamic> json) {
     return NodesList(
-      nodeIds: [...json['nodes'].cast<String>()],
+      nodeIds: [...(json['nodes'] ?? []).cast<String>()],
       nodeDetails: [
-        ...json['node_details']
+        ...(json['node_details'] ?? [])
             .map<NodeDetails>(
                 (nodeDetails) => NodeDetails.fromJson(nodeDetails))
             .toList()

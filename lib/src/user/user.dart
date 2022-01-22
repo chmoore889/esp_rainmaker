@@ -1,5 +1,4 @@
 import 'package:esp_rainmaker/esp_rainmaker.dart';
-import 'package:esp_rainmaker/src/user/response_models.dart';
 import 'package:esp_rainmaker/src/url_base.dart';
 import 'package:http/http.dart';
 import 'package:isolate_json/isolate_json.dart';

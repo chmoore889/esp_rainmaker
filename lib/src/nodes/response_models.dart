@@ -155,19 +155,19 @@ class NodeConfig {
 @immutable
 class MappingStatus {
   /// The ID of the node being mapped.
-  final String nodeId;
-  final String timestamp;
+  final String? nodeId;
+  final String? timestamp;
 
   /// The current status of the mapping request.
   final MappingRequestStatus status;
-  final String confirmTimestamp;
-  final String discardedTimestamp;
+  final String? confirmTimestamp;
+  final String? discardedTimestamp;
 
   /// The source of the mapping request.
-  final MappingRequestSource source;
+  final MappingRequestSource? source;
 
   /// The mapping request ID.
-  final String requestId;
+  final String? requestId;
 
   const MappingStatus({
     required this.nodeId,
@@ -180,7 +180,13 @@ class MappingStatus {
   });
 
   factory MappingStatus.fromJson(Map<String, dynamic> json) {
-    T enumFromString<T>(List<T> enumList, String value) {
+    MappingRequestStatus enumFromString(List<MappingRequestStatus> enumList, String value) {
+      return enumList.firstWhere(
+        (type) => type.name == value,
+      );
+    }
+    T? enumFromStringNull<T>(List<T> enumList, String? value) {
+      if(value == null) return null;
       return enumList.firstWhere(
         (type) => type.toString().split('.').last == value,
       );
@@ -195,7 +201,7 @@ class MappingStatus {
       confirmTimestamp: json['confirm_timestamp'],
       discardedTimestamp: json['discarded_timestamp'],
       source:
-          enumFromString(MappingRequestSource.values, json['request_source']),
+          enumFromStringNull(MappingRequestSource.values, json['request_source']),
       requestId: json['request_id'],
     );
   }

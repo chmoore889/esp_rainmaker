@@ -253,12 +253,8 @@ class NodeAssociation {
       throw 'Bad state!';
     }
 
-    if (bodyResp is Map<String, dynamic>) {
-      return [SharingDetail.fromJson(bodyResp)];
-    } else {
-      return bodyResp
-          ?.map<SharingDetail>((e) => SharingDetail.fromJson(e))
-          ?.toList();
-    }
+    return bodyResp['node_sharing']
+        ?.map<SharingDetail>((e) => SharingDetail.fromJson(e))
+        ?.toList();
   }
 }

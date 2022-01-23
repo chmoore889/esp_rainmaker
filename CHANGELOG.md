@@ -1,3 +1,7 @@
+## 1.0.0+1
+
+- Fixed null safety bugs.
+
 ## 1.0.0
 
 - Migrated to null safety.

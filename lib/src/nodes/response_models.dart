@@ -180,13 +180,15 @@ class MappingStatus {
   });
 
   factory MappingStatus.fromJson(Map<String, dynamic> json) {
-    MappingRequestStatus enumFromString(List<MappingRequestStatus> enumList, String value) {
+    MappingRequestStatus enumFromString(
+        List<MappingRequestStatus> enumList, String value) {
       return enumList.firstWhere(
         (type) => type.name == value,
       );
     }
+
     T? enumFromStringNull<T>(List<T> enumList, String? value) {
-      if(value == null) return null;
+      if (value == null) return null;
       return enumList.firstWhere(
         (type) => type.toString().split('.').last == value,
       );
@@ -200,8 +202,8 @@ class MappingStatus {
           enumFromString(MappingRequestStatus.values, json['request_status']),
       confirmTimestamp: json['confirm_timestamp'],
       discardedTimestamp: json['discarded_timestamp'],
-      source:
-          enumFromStringNull(MappingRequestSource.values, json['request_source']),
+      source: enumFromStringNull(
+          MappingRequestSource.values, json['request_source']),
       requestId: json['request_id'],
     );
   }

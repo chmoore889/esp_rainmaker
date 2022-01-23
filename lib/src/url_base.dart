@@ -14,7 +14,8 @@ class URLBase {
   URLBase(this._version);
 
   Uri getPath(String path, [Map<String, String>? queryParameters]) {
-    return Uri.https(_base, '/${_version!.toShortString()}/$path', queryParameters);
+    return Uri.https(
+        _base, '/${_version!.toShortString()}/$path', queryParameters);
   }
 }
 

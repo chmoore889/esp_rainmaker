@@ -1,3 +1,7 @@
+## 1.0.0+2
+
+- Format to improve pub score.
+
 ## 1.0.0+1
 
 - Fixed null safety bugs.
